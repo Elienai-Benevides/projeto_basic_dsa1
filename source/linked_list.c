@@ -212,16 +212,19 @@ Node* binary_search(List *L, const char* data) {
 	Node *node = NULL;
 return node;
 }
-//forget it middle
 void deleta_index(List *L, size_t index) {
-	size_t i = 1;
+	size_t i = 0;
+ if(!is_empty(L)){
 	Node *itr = L->begin;
-	while(i < index-1) {
+	while(i < index) {
 		itr = itr->pnext;
 	i++;
 	}
 	printf("destruido numero, i = %ld , cpf = %s, name = %s", i, itr->cpf, itr->name);
 	deleta(L, itr);
+ }else{
+	printf("Está vazio, nada na lista\n");
+ }
 }
 void deleta_middle(List *L, int value) {
 	Node *itr, *aux;

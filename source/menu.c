@@ -30,7 +30,7 @@ void executar(menu *m) {
 	char name[30], cpf[30];
 	int index;
 	char filename[30];
-	while(op != 11) {
+	while(op) {
 		printf("Forneça a as seguintes opções de entrada\n");
 		printf("1)inserir no inicio da lista\n");
 		printf("2)inserir na posicao N\n");
@@ -38,7 +38,7 @@ void executar(menu *m) {
 		printf("4)Remover no inicio da lista\n");
 		printf("5)Remover na posição N da lista\n");
 		printf("6)Remover no fim da lista\n");
-		printf("7)Procurar nó com campo rg");
+		printf("7)Procurar nó com campo rg\n");
 		printf("8)Mostrar lista na tela\n");
 		printf("9)Salvar a lista em arquivo\n");
 		printf("10)Ler a lista de um arquivo\n");
@@ -46,14 +46,15 @@ void executar(menu *m) {
 		puts(" ");
 		printf("> ");
 		scanf("%d", &op);
-		switch(op) {
+		switch(op != 11) {
 		   case 1: { 
 				   printf("Entre com os dados; \n");
 			           printf("NOME:\n");
 				   scanf("%s", name);
 				   printf("RG:\n");
 				   scanf("%s", cpf);
-				   insert_start(m->list,name,cpf); }
+				   insert_start(m->list,name,cpf);
+			  printf("tamanho lista = %ld!", get_size(m->list)); }
 		   break;
 		   case 2: { 
 				   printf("Entre com os dados; \n");
@@ -71,15 +72,17 @@ void executar(menu *m) {
 				   scanf("%s", name);
 				   printf("RG:\n");
 				   scanf("%s", cpf);
-				   insert(m->list,name,cpf); }
+				   insert(m->list,name,cpf);
+			  printf("tamanho lista = %ld!", get_size(m->list)); }
 		   break;
-		   case 4: { deleta_index(m->list,1); }
+		   case 4: { deleta_index(m->list,0); }
 		   break;
 		   case 5: { 
 				   printf("INDIce\n");
 				   deleta_index(m->list,index); }
 		   break;
-		   case 6: { deleta_index(m->list, get_size(m->list)); }
+		   case 6: { printf("egt_size() %ld\n", get_size(m->list));
+				   deleta_index(m->list, get_size(m->list)-1); }
 		   break;
 		   case 10: { 	
 				int option = 0;
@@ -110,7 +113,8 @@ void executar(menu *m) {
 		   }
 		   case 11: { printf("Saindo...\n"); }	
 		   break;
-		   default: { printf("Opcao invalida, tente novamente\n"); }
+		   default: { printf("Opcao invalida, tente novamente\n");
+			      break;					 }
 		}
 	}
 }

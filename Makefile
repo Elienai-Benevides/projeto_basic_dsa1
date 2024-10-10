@@ -6,9 +6,6 @@ LIB = ./lib
 INCLUDE = ./include
 FLAGS = -O3 -Wall 
 LIBS = -lm -led -L $(LIB)
-COMENTARIO = "A parada eh que se n existisse checkagem na criacao dos bin com libed.a nas depend do target myapps(dependencias)\
-	     poderia dar desincronizacao na compilacao \
-	     tambem posso colocar em myapps: como dependencia um novo target libed que checa dependen de new obj e update ./lib"\
 
 all: libed myapps
 
@@ -17,7 +14,6 @@ hello:
 	tree .
 	
 libed: \
-	$(OBJ)/mytime.o \
 	$(OBJ)/linked_list.o \
         $(OBJ)/sort_n_search.o\
 	$(OBJ)/ListRecorder.o \
@@ -26,7 +22,6 @@ libed: \
 
 myapps: \
 	libed \
-	$(BIN)/main \
 	$(BIN)/main01
 
 $(OBJ)/%.o: $(SRC)/%.c $(INCLUDE)/%.h		
@@ -36,12 +31,10 @@ $(OBJ)/%.o: $(SRC)/%.c $(INCLUDE)/%.h
 $(BIN)/%: $(APPS)/%.c $(LIB)/libed.a 
 	gcc $(FLAGS) $< $(LIBS) -I $(INCLUDE) -o $@ 
 
-run:
-	$(BIN)/app
-	$(BIN)/mytime 
+run: 
 
 clean:
-	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/* ./arquivos/generic_file.txt
+	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/*
 clean_apps:
 	rm -rf $(BIN)/*
 
