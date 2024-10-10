@@ -10,4 +10,5 @@ typedef struct Menu menu;
 menu* create_Menu();
 void destroy_Menu(menu **m);
 void executar(menu *m);
+bool handle_alphanum(int *op, char C); 
 #endif

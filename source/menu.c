@@ -25,12 +25,23 @@ void destroy_Menu(menu **m) {
 	temp->list_sort = NULL;
 	temp->list_recorder = NULL;
 }
+bool handle_alphanum(int *op, char C) {
+	if(scanf("%d", op) != 1) {
+		printf("Entrada invalida, entre com um inteiro\n");
+		while(((C = getchar()) != '\n') && (C != EOF)) {
+		//	if(C == '\n') { break;}
+		}
+
+		return false;
+	}
+	return true;
+}
 void executar(menu *m) {
 	int op = 0;
 	char name[30], cpf[30];
 	int index;
 	char filename[30];
-	while(op) {
+	while(op != 11) {
 		printf("Forneça a as seguintes opções de entrada\n");
 		printf("1)inserir no inicio da lista\n");
 		printf("2)inserir na posicao N\n");
@@ -45,8 +56,10 @@ void executar(menu *m) {
 		printf("11)Sair do Sistema\n");
 		puts(" ");
 		printf("> ");
-		scanf("%d", &op);
-		switch(op != 11) {
+		//scanf("%d", &op);
+		char c;
+		if(!handle_alphanum(&op, c)) { printf("ok");}
+		switch(op) {
 		   case 1: { 
 				   printf("Entre com os dados; \n");
 			           printf("NOME:\n");
@@ -113,8 +126,8 @@ void executar(menu *m) {
 		   }
 		   case 11: { printf("Saindo...\n"); }	
 		   break;
-		   default: { printf("Opcao invalida, tente novamente\n");
-			      break;					 }
+		   default: { printf("Opcao invalida, tente novamente\n"); }
+		   break;
 		}
 	}
 }
