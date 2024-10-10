@@ -20,12 +20,14 @@ libed: \
 	$(OBJ)/mytime.o \
 	$(OBJ)/linked_list.o \
         $(OBJ)/sort_n_search.o\
-	$(OBJ)/ListRecorder.o
+	$(OBJ)/ListRecorder.o \
+	$(OBJ)/menu.o
 	ar -rcs $(LIB)/libed.a $(OBJ)/*.o
 
 myapps: \
 	libed \
-	$(BIN)/main
+	$(BIN)/main \
+	$(BIN)/main01
 
 $(OBJ)/%.o: $(SRC)/%.c $(INCLUDE)/%.h		
 	gcc $(FLAGS) -c $< -I $(INCLUDE) -o $@	

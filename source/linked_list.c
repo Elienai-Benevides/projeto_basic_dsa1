@@ -37,7 +37,7 @@ char *get_filename(List *L) {
 	return L->filename;
 }
 size_t get_size(List *L) {
-	return L->size_list;
+	return size_list;
 }
 void set_value(Node *knot, int value) {
 	knot->value = value;
@@ -51,15 +51,25 @@ void set_cpf(Node *knot, const char *cpf) {
 void set_filename(List *L, const char* filename) {
 	strcpy(L->filename,filename);
 }
+char* create_string(size_t tam) {
+	char *c =(char*)calloc(tam+1, sizeof(char));	
+	return c;
+}
+void destroy_string(char **s) {
+	char* aux = *s;
+	free(aux);
+	*s = NULL;
+}
 Node *create_Node(const char *name, const char *cpf) {
 	Node *node = (Node*)calloc(1, sizeof(Node));
 	if(node == NULL) {
 		printf("Erro ao alocar na funcao ./source/create_Node\n");
 	}
-	//strcpy(node->name, name);
-	//strcpy(node->cpf, cpf);
-	node->name = name;
-	node->cpf = cpf;
+	node->name = create_string(strlen(name));
+	strcpy(node->name, name);
+	node->cpf = create_string(strlen(cpf));	
+	strcpy(node->cpf, cpf);
+	
 	node->pprev = node->pnext = NULL;
 	return node;
 }
@@ -70,7 +80,7 @@ List *create_List(){
 	}
 	list->begin = NULL;
 	list->end = NULL;
-	list->size_list = 0;
+	size_list = 0;
 	return list;		
 }
 void destroy_List(List **L) {
@@ -80,9 +90,7 @@ if(!is_empty(aux)){
 
 	while(itr != NULL) {
 		aux->begin = aux->begin->pnext;
-		free(itr->name);
-		free(itr->cpf);
-		free(itr);
+		destroy_Node(&itr);
 		itr = aux->begin;
 	}
         free(aux);
@@ -91,13 +99,19 @@ if(!is_empty(aux)){
 }
 void destroy_Node(Node **node) {
 	Node *aux = *node;
+	destroy_string((&aux->name));
+	destroy_string((&aux->cpf));
 	free(aux);
 	*node = NULL;
 }
 bool is_empty(List *L) {
-	if((L->begin != NULL)) {
-		return false;
-	} 
+	if(L != NULL) {
+		if((L->begin != NULL)) {
+			return false;
+		} 
+	}else{
+		printf("struct LIsta nao declarada, log em ./source/linked_list.c/is_empty\n");
+	}
 	return true;
 }
 void insert(List *L, const char *name, const char *cpf) {
@@ -111,77 +125,87 @@ void insert(List *L, const char *name, const char *cpf) {
 		//L->end = node;
 	}
 	L->end = node;
-	L->size_list++;
+	size_list++;//L->size_list++;
 }
 void insert_start(List *L, const char* name, const char* cpf) {
 	Node *node = create_Node(name, cpf);
 	if(!is_empty(L)) {
 		node->pnext = L->begin;
 	   	L->begin->pprev = node;	
+		L->begin = node;
 	}else{
 		L->begin = node;
 		L->end = node;
 	}
-	L->size_list++;
+	size_list++; //L->size_list++;
 }
-void insert_middle(List *L, int index, const char* name, const char* cpf) {
+void insert_middle(List *L, size_t index, const char* name, const char* cpf) {
 	Node *node = create_Node(name, cpf);
 	if(!is_empty(L)) {
 		Node *itr = L->begin;
-		int i = 0;
+		size_t i = 1;
+	    if(index > size_list) {
 		while(i < index) {	
-	  		itr = itr->pnext; 
+	  		itr = itr->pnext;
 			i++;
 		}
-		if((itr->pprev != NULL)) {
-	  		node->pnext = itr;
-	  		node->pprev = itr->pprev;
-		  	itr->pprev = node;
-		}else if((itr->pnext == NULL) && (itr->pprev == NULL)){
-			node->pnext = L->end = L->begin;
-			L->end->pprev = node;
-			L->end = L->begin = node;
-		}else{
-			node->pnext = L->begin;
-	  		L->begin->pprev = node;
+		if((itr == L->begin) && (itr == L->end)){
+			node->pnext = L->begin;			
+			L->begin->pprev = node;
 			L->begin = node;
-	  	}	
-		L->size_list++;
+			L->end = node;
+
+		}else if(itr->pprev == NULL){
+				node->pnext = L->begin;
+				node->pprev = L->begin->pprev;
+				L->begin->pprev = node;
+				L->begin = node;
+		}else if(itr->pnext == NULL) {
+				node->pprev = L->end->pprev;
+				node->pnext = L->end;
+				L->end->pprev = node;
+
+		}else{
+				node->pnext = itr;
+				itr->pprev->pnext = node;
+				node->pprev = itr->pprev;
+				itr->pprev = node;		
+		}
+	    size_list++;//L->size_list++;
+	    }else{
+		printf("Indice inexistente, e maior que tamanho a lista: %d", (int)get_size(L));
+		
+	    }
 	}	
 }
-void deleta(List *L, Node* data) {
-	Node *itr;
-	Node *itr1 = data;
+void deleta(List *L, Node* node) {//neste caso ja achei meu valor especifico diferente de um while() que acha todos os valores iguais a data
 	//funcao de busca binaria
 	//data = node retornado
-	itr = L->begin;
-	if(data) {	
-		if((L->begin == L->end) && (L->begin == data)) { // se for o primeiro e unico node da lista
-			itr->pnext->pprev = L->begin->pprev;
-			L->begin = itr->pnext;			
-			destroy_Node(&itr);			
-		}else {//se for o primeiro de uma lista
-			itr = itr->pnext;
-	  		if(itr == L->end) {
-				L->begin->pnext = L->end->pnext;
-				L->end = NULL;
-				destroy_Node(&itr);
+	if(node) {	
+		if((node == L->end) && (node == L->begin)) { // se for o primeiro e unico node da lista	
+			destroy_Node(&node);
+			L->begin = L->end = NULL;	
+		}else{
+			if(node->pprev == NULL) {
+				node->pnext->pprev = node->pprev;
+				L->begin = node->pnext;
+				destroy_Node(&node);
 			}
-			if(itr->pnext == NULL) {
-				itr->pprev->pnext = itr->pnext;
-				L->end = itr->pprev;
-				destroy_Node(&itr);
-				L->size_list--;
-
+			if(node->pnext == NULL) {
+				node->pprev->pnext = node->pnext;			
+				L->end = node->pprev;				
+				destroy_Node(&node);				
 			}else{
-				itr->pprev->pnext = itr->pnext;
-				itr->pnext->pprev = itr->pprev;
+				node->pprev->pnext = node->pnext;
+				node->pnext->pprev = node->pprev;
+				destroy_Node(&node);
 			}
 		}
-	}else {
+	}else{
 		fprintf(stderr,"data node not found\n");
 		exit(EXIT_FAILURE);
 	}
+	size_list--;
 }
 Node* binary_search(List *L, const char* data) {
 	printf("Funcao a implementar\n");
@@ -189,29 +213,38 @@ Node* binary_search(List *L, const char* data) {
 return node;
 }
 //forget it middle
-void deleta_Middle(List *L, int value) {
+void deleta_index(List *L, size_t index) {
+	size_t i = 1;
+	Node *itr = L->begin;
+	while(i < index-1) {
+		itr = itr->pnext;
+	i++;
+	}
+	printf("destruido numero, i = %ld , cpf = %s, name = %s", i, itr->cpf, itr->name);
+	deleta(L, itr);
+}
+void deleta_middle(List *L, int value) {
 	Node *itr, *aux;
 	if(!is_empty(L)) {       
-	itr = L->begin;
+	   itr = L->begin;
 	   while(itr != NULL) {
-	     if(itr->value == value) {
-	       if(itr->pprev != NULL) {
-	         if(itr->pnext == NULL) {
-		    L->end = itr->pprev;
-		 }
-		 itr->pprev->pnext = itr->pnext;
-	       }else{
-		     	L->begin = itr->pnext;
-	       }
+	    	 if(itr->value == value) {
+	       		if(itr->pprev != NULL) {
+	         		if(itr->pnext == NULL) {
+		    			L->end = itr->pprev;
+		 		}
+		 	itr->pprev->pnext = itr->pnext;
+	       		}else{
+		     		L->begin = itr->pnext;
+	       		}
 			aux = itr->pprev;
-			destroy_Node(&itr); //free(itr);
+			destroy_Node(&itr);
 			itr = aux;
-	     }
-		itr = itr->pnext;
+	     	  }
+		  itr = itr->pnext;
 	   }	
 	}
-	L->size_list--;
-
+	size_list--; //L->size_list--;
 }
 void display(List *L) {
 if(!is_empty(L)) {
@@ -234,22 +267,16 @@ void read_file(List *lista, const char *file_name) {
 	while((fgets(buffer, sizeof(buffer) - 1, file) != NULL)) {
 		buffer[strcspn(buffer, "\n")] = '\0';
 		//sscanf(buffer, "%s[^,],%s", name, cpf);
-		char *token;
+		char *token1;
+		char *token2;
 		char limit[] = ",";
-		token = strtok(buffer, limit);
-		char *new_char = (char*)calloc(strlen(token)+1, sizeof(char));
-		
+		token1 = strtok(buffer, limit);		
 		//new_char[strlen(token)] = '\0';
-		strcpy(new_char, token);
-		token = strtok(NULL, limit);
-		for(int i = 0; i < strlen(token)+1; i++) {
-			token[i] = token[i+1]; 
-		}	
-	        char *new_char1 = (char*)calloc(strlen(token)+1, sizeof(char));	
-		strcpy(new_char1, token);
-		//token_name = strtok(buffer, ",");
-		//toke_cpf = strtok(",", );
-		insert(lista, new_char, new_char1);
+		token2 = strtok(NULL, limit);
+		for(int i = 0; i < strlen(token2)+1; i++) {
+			token2[i] = token2[i+1]; 
+		}
+		insert(lista, token1, token2);
 	}
 	fclose(file);
 }

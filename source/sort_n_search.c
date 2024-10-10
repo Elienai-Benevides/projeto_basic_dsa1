@@ -1,4 +1,5 @@
 #include "sort_n_search.h"
+#include "ListRecorder.h"
 typedef struct sort_n_search {
 	List *lista;
 	//int id_lista;
@@ -35,9 +36,18 @@ sort_list* create_sort_n_search() {
 }
 void destroy_sort_n_search(sort_list** list) {
 	sort_list *s = *list;
-        List *l = s->lista;	
-	destroy_List(&l);
-	free(s);	
+     if(s != NULL) {	
+		List *l = s->lista;
+		ListRecorder *list_recorder = s->lista_recorder;	
+		//destroy_List(&l);
+		s->lista = NULL;
+		//destroy_list_recorder(&list_recorder);
+		s->lista_recorder = NULL;
+		free(s);
+		*list = NULL;	
+     }else {
+	     printf("classe sort_n_search inexistente\n");
+     }
 }
 void insertion(sort_list *L) {
    List *Laux = L->lista;

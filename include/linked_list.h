@@ -20,10 +20,10 @@
 		Node *begin;
 		Node  *end;
 		char filename[30];
-		size_t size_list;
+		//size_t size_list;
 		int id;	
 	}List;       
-	
+	static size_t size_list = 0; 
 	int get_value(Node* curr_knot);
 	char* get_name(Node* curr_knot);
 	char* get_cpf(Node* curr_knot);
@@ -37,15 +37,17 @@
 	size_t get_size(List *L);
 
 	Node* create_Node(const char* name, const char* cpf);
+	char* create_string(size_t tam);
 	List* create_List();
-
+	void destroy_string(char** s);
 	void insert(List *L, const char*name, const char* cpf);
 	void insert_start(List *L, const char *name, const char *cpf);
-	void insert_middle(List *L, int index, const char *name, const char *cpf);
+	void insert_middle(List *L, size_t index, const char *name, const char *cpf);
 	void destroy_List(List **L);
 	void destroy_Node(Node **node);
-	void deleta_Middle(List *L, int value);
-	void deleta(List *L, Node* data);//deleta apos busca binaria
+	void deleta_middle(List *L, int value); //interessante que a assinatura deste metodo na implementaÇÃo independe do seguno parametro  int value mas considera o tipo, apenas.
+	void deleta_index(List *L, size_t index); 
+	void deleta(List *L, Node* node);//deleta apos busca binaria
 	Node *binary_search(List *L, const char* data);
 	bool is_empty(List *L);
 	void display(List *L);

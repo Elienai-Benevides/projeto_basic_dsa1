@@ -11,6 +11,9 @@ typedef struct ListRecorder ListRecorder;
 
 ListRecorder* create_ListRecorder();
 FileRecorder* create_FileRecorder();
+void destroy_list_recorder(ListRecorder **list_recorder);
+void destroy_file_recorder(FileRecorder **file_recorder);
+
 void open_file(FileRecorder *file, const char *file_name); 
 void close_file(FileRecorder *file);
 void serializa(ListRecorder *L , List *lista);

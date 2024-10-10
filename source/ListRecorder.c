@@ -12,7 +12,7 @@ typedef struct FileRecorder {
 	FileRecorder *pprev;
 }FileRecorder;
 ListRecorder* create_ListRecorder() {
-	ListRecorder *list =(ListRecorder*)calloc(1, sizeof(ListRecorder));
+	ListRecorder *list = (ListRecorder*)calloc(1, sizeof(ListRecorder));
 	if(list == NULL) {
 		printf("Erro ao alocar na funcao ./source/create_ListRecorder\n");
 	}
@@ -32,6 +32,30 @@ FileRecorder* create_FileRecorder(){
 	strcpy(f->file_name, " ");
 	return f;
 }
+void destroy_list_recorder(ListRecorder **list_recorder) {
+	ListRecorder *temp = *list_recorder;
+	if(temp != NULL) {
+		FileRecorder *itr = temp->start;
+		FileRecorder *ptr;
+		ptr = itr;
+		while(itr != NULL) {
+	  	itr = itr->pnext;
+	  	free(ptr);	
+	  	ptr = itr;
+		}
+		*list_recorder = NULL;
+	}else{ printf("lista inexistente em ./source/ListRecorder/destroy_list_recorder\n");
+	}
+}
+void destroy_file_recorder(FileRecorder **file_recorder) {
+	FileRecorder *temp = *file_recorder;
+	temp->file = NULL;
+	strcpy(temp->file_name, " ");
+
+	temp->id = 0;
+	free(temp);
+	*file_recorder = NULL;
+	}
 // Abertura de arquivo apenas para funcao aqui
 void open_file(FileRecorder *file, const char *file_name) {
 	file->file = fopen(file_name, "ab");	
@@ -64,8 +88,8 @@ void serializa(ListRecorder *L , List *lista) { // apenas serializo uma lista qu
 	//open_succes(fwrite(&(f->id), sizeof(int), 1, f->file));
 	open_succes(fwrite(&tam, sizeof(size_t), 1, f->file));
 	while(itr != NULL) {	
-		int s_1 = strlen(itr->name)+1;
-		int s_2 = strlen(itr->cpf)+1;
+		int s_1 = strlen(itr->name);//+1;
+		int s_2 = strlen(itr->cpf);//+1;
 		//open_succes(fwrite(itr,sizeof(Node),1, f->file));
 		open_succes(fwrite(&s_1, sizeof(int),1, f->file));
 		open_succes(fwrite(itr->name, sizeof(char), s_1, f->file));
@@ -103,15 +127,12 @@ List* deserializa(ListRecorder *L, int id) { //deserializo uma lista que ja foi 
 	  //printf("./source/deseri = %ld\n", tam_list);
 	  while(i < tam_list) {
 		        Node *node = (Node*)calloc(1, sizeof(Node));
-			//fread(node, sizeof(Node), 1, file->file);
 			fread(&tam_name, sizeof(int), 1, file->file);
-			//printf("tamanho name = %d", tam_name);
-			node->name = (char*)calloc(tam_name, sizeof(char));
+			node->name = create_string(tam_name);//(char*)calloc(tam_name, sizeof(char));
 			fread(node->name, sizeof(char), tam_name, file->file);
 			fread(&tam_cpf, sizeof(int), 1, file->file);
-			node->cpf = (char*)calloc(tam_cpf, sizeof(char));
-		        //printf("tamanho cpf = %d\n", tam_cpf);
-			fread(node->cpf, sizeof(char),tam_cpf, file->file);
+			node->cpf = create_string(tam_cpf);//(char*)calloc(tam_cpf, sizeof(char));
+		    	fread(node->cpf, sizeof(char),tam_cpf, file->file);
 			if((lista->begin) == NULL) {
 				lista->begin = lista->end = node;	
 		   	}else{
