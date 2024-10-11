@@ -8,10 +8,6 @@ FLAGS = -O3 -Wall
 LIBS = -lm -led -L $(LIB)
 
 all: libed myapps
-
-hello:
-	echo "Hallo1"
-	tree .
 	
 libed: \
 	$(OBJ)/linked_list.o \
