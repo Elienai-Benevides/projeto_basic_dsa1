@@ -37,8 +37,8 @@ sort_list* create_sort_n_search() {
 void destroy_sort_n_search(sort_list** list) {
 	sort_list *s = *list;
      if(s != NULL) {	
-		List *l = s->lista;
-		ListRecorder *list_recorder = s->lista_recorder;	
+		//List *l = s->lista;
+		//ListRecorder *list_recorder = s->lista_recorder;	
 		//destroy_List(&l);
 		s->lista = NULL;
 		//destroy_list_recorder(&list_recorder);

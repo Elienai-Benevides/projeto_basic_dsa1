@@ -58,7 +58,7 @@ void executar(menu *m) {
 		printf("> ");
 		//scanf("%d", &op);
 		char c;
-		if(!handle_alphanum(&op, c)) { printf("ok");}
+		if(!handle_alphanum(&op, c)) { continue;}
 		switch(op) {
 		   case 1: { 
 				   printf("Entre com os dados; \n");
@@ -77,7 +77,7 @@ void executar(menu *m) {
 				   scanf("%s", cpf);
 				   printf("INDIce\n");
 				   scanf("%d", &index);
-				   insert_middle(m->list, index,name,cpf); }
+				   insert_middle(m->list, (index-1),name,cpf); }
 		   break;
 		   case 3: { 
 				   printf("Entre com os dados; \n");
@@ -86,16 +86,47 @@ void executar(menu *m) {
 				   printf("RG:\n");
 				   scanf("%s", cpf);
 				   insert(m->list,name,cpf);
-			  printf("tamanho lista = %ld!", get_size(m->list)); }
+			  }
 		   break;
-		   case 4: { deleta_index(m->list,0); }
+		   case 4: { 
+				   deleta_index(m->list,0);
+			   }
 		   break;
 		   case 5: { 
-				   printf("INDIce\n");
-				   deleta_index(m->list,index); }
+				   printf("Defina o indice\n");
+				   int index = 0;
+				   scanf("%d", &index);
+				   deleta_index(m->list,(index-1));
+			   }
 		   break;
-		   case 6: { printf("egt_size() %ld\n", get_size(m->list));
-				   deleta_index(m->list, get_size(m->list)-1); }
+		   case 6: {
+				   deleta_index(m->list, get_size(m->list)-1);
+			   }
+		   break;
+		   case 7: {  
+			      List *lista = m->list;	   
+			      Node* n = get_begin(lista);
+			      char data[30];
+			      int cont = 0;
+			      bool b = false;
+			      printf("Entre com o Rg");
+			      scanf("%s", data);
+			      while(n != NULL) {
+				  cont++;
+			          if((b = (strcmp(get_cpf(n), data) == 0)) ) {
+					printf("name: %s\n Rg: %s\n Indice: %d", 
+					get_name(n), get_cpf(n), (cont));
+						
+				   }
+				      n = get_pnext(n);
+			       }
+			      b == true ? printf("Encontrado\n") : printf("N Encontrado\n"); 
+
+	 /*binary_search*/ }
+		   break;
+		   case 8: { display(m->list);}
+		   break;
+	           case 9: { serializa(m->list_recorder, m->list); }
 		   break;
 		   case 10: { 	
 				int option = 0;
@@ -107,23 +138,37 @@ void executar(menu *m) {
 					printf("4)Arquivo de 1M\n");
 					printf("5)Arquivo de 100M\n");
 					printf("6)Sair\n");
+					scanf("%d", &option);
 					switch(option) {
-						case 1: { read_file(m->list, "a");  }
-					   	break;
-					   	case 2: { read_file(m->list, "b");  }
+						case 1: { read_file(m->list, "./arquivos/NomeRG1K.txt");
+						       printf("Lista lida do arquivo\n");}
+					  	break;
+					   	case 2: { 
+						       read_file(m->list, "b"); 
+						       printf("Lista lida do arquivo\n");}
 						break;
-						case 3: { read_file(m->list,  "c");  }
+						case 3: { 
+
+								read_file(m->list,  "c");
+						      		printf("Lista lida do arquivo\n");						   }
 						break;
-						case 4: { read_file(m->list, "d");  }
+						case 4: { read_file(m->list, "d"); 
+						       	  printf("Lista lida do arquivo\n");	
+							
+							}
 						break;
-						case 5: { read_file(m->list, "e");  }
+						case 5: {							
+								read_file(m->list, "e");
+						     		printf("Lista lida do arquivo\n"); 	}
 						break;
 						case 6: { printf("Saindo...\n"); }
+						break;
 						default: { printf("Opção inválida, tente novamente\n"); }
 					}
 
 				    }
 		   }
+	           break;
 		   case 11: { printf("Saindo...\n"); }	
 		   break;
 		   default: { printf("Opcao invalida, tente novamente\n"); }

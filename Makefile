@@ -34,7 +34,7 @@ $(BIN)/%: $(APPS)/%.c $(LIB)/libed.a
 run: 
 
 clean:
-	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/*
+	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/* ./arquivos/generic_file.txt
 clean_apps:
 	rm -rf $(BIN)/*
 

@@ -143,8 +143,8 @@ void insert_middle(List *L, size_t index, const char* name, const char* cpf) {
 	Node *node = create_Node(name, cpf);
 	if(!is_empty(L)) {
 		Node *itr = L->begin;
-		size_t i = 1;
-	    if(index > size_list) {
+		size_t i = 0;
+	    if(index <= size_list) {
 		while(i < index) {	
 	  		itr = itr->pnext;
 			i++;
@@ -173,7 +173,7 @@ void insert_middle(List *L, size_t index, const char* name, const char* cpf) {
 		}
 	    size_list++;//L->size_list++;
 	    }else{
-		printf("Indice inexistente, e maior que tamanho a lista: %d", (int)get_size(L));
+		printf("Indice inexistente, e maior que tamanho a lista: %ld", size_list);
 		
 	    }
 	}	
@@ -255,7 +255,8 @@ if(!is_empty(L)) {
 	int cont = 0;
 	while(itr != NULL) {
 	  cont++;
-	  printf("%d)Nome:%s\n Rg:%s\n", cont, itr->name, itr->cpf);	  
+	  printf("%d)Nome:%s\n Rg:%s\n", cont, itr->name, itr->cpf);
+	  puts("  ");	  
 	  itr = itr->pnext;
 	}
 }
