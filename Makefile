@@ -13,6 +13,7 @@ libed: \
 	$(OBJ)/linked_list.o \
         $(OBJ)/sort_n_search.o\
 	$(OBJ)/ListRecorder.o \
+	$(OBJ)/sequencial.o \
 	$(OBJ)/menu.o
 	ar -rcs $(LIB)/libed.a $(OBJ)/*.o
 

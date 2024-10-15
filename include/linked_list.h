@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stddef.h>
+#include <time.h>
 	typedef struct ListRecorder ListRecorder;
 	//typedef struct _doubly_list List;	
 	typedef struct _doubly_node Node;
@@ -36,6 +37,7 @@
 	char *get_filename(List *L);
 	size_t get_size(List *L);
 
+
 	Node* create_Node(const char* name, const char* cpf);
 	char* create_string(size_t tam);
 	List* create_List();
@@ -50,11 +52,11 @@
 	void deleta(List *L, Node* node);//deleta apos busca binaria
 	Node *binary_search(List *L, const char* data);
 	bool is_empty(List *L);
-	void display(List *L);
+
 	void iter(Node **knot, Node *knot1);
 
 	void read_file(List *lista, const char *file_name);
-
+	double timer_count(clock_t start, clock_t end);
 	Node* get_pnext(Node *knot);
 	Node* get_pprev(Node *knot);
 	Node* get_begin(List* L);
@@ -63,4 +65,7 @@
 	void set_end(List *L, Node* knot1);
 	void set_pprev(Node **knot, Node** knot1);
 	void set_pnext(Node **knot, Node** knot1);
+	void performance(size_t *mov, size_t *comp, size_t nulling_mov, size_t nulling_comp);
+	void display(List *L);
+	void display_1(List *L);
 #endif

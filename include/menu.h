@@ -5,7 +5,7 @@
 #include "linked_list.h"
 #include "sort_n_search.h"
 #include "ListRecorder.h"
-
+#include "sequencial.h"
 typedef struct Menu menu;
 menu* create_Menu();
 void destroy_Menu(menu **m);

@@ -2,6 +2,7 @@
 typedef struct Menu {
 	List* list;
 	sort_list *list_sort;
+	seq *seq_list;
 	ListRecorder *list_recorder;
 }menu;
 menu* create_Menu() {
@@ -9,21 +10,15 @@ menu* create_Menu() {
 	m->list = create_List();
 	m->list_sort = create_sort_n_search();
 	m->list_recorder = create_ListRecorder();
-	return m;	
+	m->seq_list = create_sequencial();
+	return m;
 }
 void destroy_Menu(menu **m) {
 	menu *temp  = *m;
-	List *list_linked = temp->list;
-	sort_list *list_sort = temp->list_sort;
-	ListRecorder* list_recorder = temp->list_recorder;
-	
-	destroy_List(&list_linked);
- 	destroy_sort_n_search(&list_sort);
-	destroy_list_recorder(&list_recorder);
-	
-	temp->list = NULL;
-	temp->list_sort = NULL;
-	temp->list_recorder = NULL;
+	destroy_List(&temp->list);
+ 	destroy_sort_n_search(&temp->list_sort);
+	destroy_list_recorder(&temp->list_recorder);
+	destroy_seq(&temp->seq_list);	
 }
 bool handle_alphanum(int *op, char C) {
 	if(scanf("%d", op) != 1) {
@@ -31,7 +26,6 @@ bool handle_alphanum(int *op, char C) {
 		while(((C = getchar()) != '\n') && (C != EOF)) {
 		//	if(C == '\n') { break;}
 		}
-
 		return false;
 	}
 	return true;
@@ -41,6 +35,7 @@ void executar(menu *m) {
 	char name[30], cpf[30];
 	int index;
 	char filename[30];
+
 	while(op != 11) {
 		printf("Forneça a as seguintes opções de entrada\n");
 		printf("1)inserir no inicio da lista\n");
@@ -59,15 +54,15 @@ void executar(menu *m) {
 		//scanf("%d", &op);
 		char c;
 		if(!handle_alphanum(&op, c)) { continue;}
-		switch(op) {
+		switch(op){
 		   case 1: { 
 				   printf("Entre com os dados; \n");
 			           printf("NOME:\n");
 				   scanf("%s", name);
 				   printf("RG:\n");
 				   scanf("%s", cpf);
-				   insert_start(m->list,name,cpf);
-			  printf("tamanho lista = %ld!", get_size(m->list)); }
+				   insert_start(m->list,name,cpf);			   
+			           printf("tamanho lista = %ld!", get_size(m->list)); }
 		   break;
 		   case 2: { 
 				   printf("Entre com os dados; \n");
@@ -124,7 +119,24 @@ void executar(menu *m) {
 
 	 /*binary_search*/ }
 		   break;
-		   case 8: { display(m->list);}
+		   case 8: { 
+				   int option = 0;
+				   while(option != 3) {
+					   printf("1)Listar sentido hr\n");
+				   	   printf("2)Listar sentido anti-hr\n");
+					   printf("3) Sair\n");
+					   char c;
+					   handle_alphanum(&option, c);
+					if(option == 1) {
+					   display(m->list);
+					   display_sequencial(m->seq_list);
+				   	}else if(option == 2) {
+					   display_1(m->list);
+				 	}else{
+					   printf("Saindo..Optou por entrada inválida ou opção 3) sair\n");
+					}	
+				   }
+				   					}
 		   break;
 	           case 9: { serializa(m->list_recorder, m->list); }
 		   break;
@@ -141,9 +153,13 @@ void executar(menu *m) {
 					scanf("%d", &option);
 					switch(option) {
 						case 1: { read_file(m->list, "./arquivos/NomeRG1K.txt");
+							  resize(m->seq_list, 1000);
+							  read_file_sequencial(m->seq_list, "./arquivos/NomeRG1K.txt");
 						       printf("Lista lida do arquivo\n");}
 					  	break;
 					   	case 2: { 
+							read_file_sequencial(m->seq_list, "./arquivos/NomeRG1K.txt");
+							
 						       read_file(m->list, "b"); 
 						       printf("Lista lida do arquivo\n");}
 						break;
