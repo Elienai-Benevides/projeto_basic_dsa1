@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stddef.h>
 #include "linked_list.h"
+#include "ListRecorder.h"
 /*typedef struct _doubly_list{
 	Node *begin;
 	Node  *end;
@@ -18,6 +19,9 @@ typedef struct _doubly_node{
 	char name[30];
 	char cpf[30];
 }Node;*/
+void set_recorder_list(List *L, ListRecorder *recorder_list) {
+	L->recorder_list = recorder_list;
+}
 int get_value(Node* curr_knot){
 	return curr_knot->value;
 }
@@ -56,9 +60,14 @@ char* create_string(size_t tam) {
 	return c;
 }
 void destroy_string(char **s) {
+char *c = *s;
+if(c != NULL){
 	char* aux = *s;
 	free(aux);
 	*s = NULL;
+}else{
+	printf("Acesso à string nulla ./source/linked_list.c/destroy_string\n");
+}
 }
 Node *create_Node(const char *name, const char *cpf) {
 	Node *node = (Node*)calloc(1, sizeof(Node));
@@ -73,7 +82,7 @@ Node *create_Node(const char *name, const char *cpf) {
 	node->pprev = node->pnext = NULL;
 	return node;
 }
-List *create_List(){
+List *create_List(int id){
 	List* list = (List*)calloc(1,sizeof(List));	
 	if(list == NULL) {
 		printf("Erro ao alocar na funcao ./source/create_List\n");
@@ -81,6 +90,8 @@ List *create_List(){
 	list->begin = NULL;
 	list->end = NULL;
 	size_list = 0;
+	list->recorder_list = NULL;
+	list->id = id;
 	return list;		
 }
 void destroy_List(List **L) {
@@ -95,6 +106,7 @@ List *aux = *L;
         free(aux);
 	*L = NULL;
  }	
+	size_list = 0;
 }
 void destroy_Node(Node **node) {
 	Node *aux = *node;
@@ -139,10 +151,12 @@ void insert(List *L, const char *name, const char *cpf) {
 }
 void insert_start(List *L, const char* name, const char* cpf) {
 	clock_t start = clock();
-	Node *node = create_Node(name, cpf);
+	//Node *node = create_Node(name, cpf);
 	size_t comp, mov;
 	double time;
 	comp = mov = 0;
+if(L != NULL) {
+	Node *node = create_Node(name, cpf);
 	if(!is_empty(L)) {
 		node->pnext = L->begin;
 	   	L->begin->pprev = node;	
@@ -157,6 +171,11 @@ void insert_start(List *L, const char* name, const char* cpf) {
 	time = timer_count(start, end);
 	printf("Insercao dos dados na lista \n Tempo: %.6f\n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
 	size_list++; //L->size_list++;
+
+}else {
+	printf("Lista não existente, dados nao inseridos\n");
+}
+
 }
 void insert_middle(List *L, size_t index, const char* name, const char* cpf) {
 	Node *node = create_Node(name, cpf);
@@ -326,6 +345,8 @@ void display(List *L) {
 	  puts("  ");	  
 	  itr = itr->pnext;
 	}
+  }else{
+	 printf("Lista vazia\n");
   } 
 }
 void display_1(List *L) {
@@ -338,16 +359,34 @@ void display_1(List *L) {
 	  puts("  ");	  
 	  itr = itr->pprev;
 	}
+  }else {
+          printf("Lista vazia\n");
+
   }
 }
-void read_file(List *lista, const char *file_name) {
+void read_file(List *lista, File_Template *T /*tamanho do arquivo*/) {
 	clock_t start = clock();
 	double time;
-	FILE *file = fopen(file_name , "r");
+	size_t cont = 0;
+	size_t ocorre = 0;
+	char* name_file = get_name_template(T);
+	printf("name template: %s", name_file);
+	FILE *file = fopen(name_file, "r");
 	if(file == NULL) {
 	  printf("Erro de abertura arquivo\n");
 	  return;
 	}
+        FileRecorder *f = create_FileRecorder();	
+ 	set_FileRecorder_id(f, lista->id);
+        set_FileRecorder_name(f, get_cod_nome(T));	
+	set_FileRecorder_file(f, fopen(get_FileRecorder_name(f), "ab"));
+
+	if(get_FileRecorder_file(f) == NULL) {
+		printf("Erro ao abri arquivo, ./source/linked_list/read_file()\n");
+	}	
+
+	size_t max = get_size_template(T);
+	fwrite(&max , sizeof(size_t), 1, get_FileRecorder_file(f));
 	char buffer[100];
 	while((fgets(buffer, sizeof(buffer) - 1, file) != NULL)) {
 		buffer[strcspn(buffer, "\n")] = '\0';
@@ -360,13 +399,64 @@ void read_file(List *lista, const char *file_name) {
 		for(int i = 0; i < strlen(token2)+1; i++) {
 			token2[i] = token2[i+1]; 
 		}
-		insert(lista, token1, token2);
+		int token1_len = strlen(token1);
+	        int token2_len = strlen(token2);
+
+		fwrite(&token1_len, sizeof(int), 1, get_FileRecorder_file(f));	
+		fwrite(token1, sizeof(char),token1_len, get_FileRecorder_file(f));
+		fwrite(&token2_len, sizeof(int), 1, get_FileRecorder_file(f));
+		fwrite(token2, sizeof(char), token2_len, get_FileRecorder_file(f));
+
+		//insert(lista, token1, token2);
+	        ocorre++;
+		//printf("size_list: %ld\n", size_list);
+
+		/*if(MACRO == NAME_RG_10M) {
+		   if(((ocorre % 1000000) == 0)){
+		  	serializa(lista->recorder_list, lista);
+		   	//destroy_List(&lista); //precisa setar NULL a lista no menu
+		   	printf("Tam antes: %ld\n", size_list);
+		   	Node *itr = lista->begin;
+		   	Node *aux = itr;
+		   	while(aux != NULL) {
+	     			itr = itr->pnext;		
+		   		destroy_Node(&aux);
+		        	aux = itr;
+		   	}
+		   	size_list = 0;
+		   	lista->begin = NULL;
+		   	lista->end = NULL; 
+		   	printf("Tam lista apos destruicao serie: %ld\n", size_list);
+		   }else {
+			  if(ocorre == MACRO) {
+			  	ocorre = MACRO - ocorre;
+			  	if(size_list == ocorre) {
+			      		serializa(lista->recorder_list, lista);
+			      		size_list = 0;
+			  	}
+			  }			  
+		   }
+		}else if(MACRO == NAME_RG_1k){ 
+			if(size_list == MACRO) {
+			     serializa(lista->recorder_list, lista);
+			     size_list = 0;
+			}
+		}else if(MACRO == NAME_RG_10K) {
+			if(size_list == MACRO) {
+			     serializa(lista->recorder_list, lista);
+			     size_list = 0;
+			}
+		}else {
+			printf("Nao existe arquivo no diretorio com este tamanho\n");
+
+		}*/	
 	}
 	fclose(file);
+	fclose(get_FileRecorder_file(f));
+	add(lista->recorder_list, f);
 	clock_t end = clock();
 	time = timer_count(start, end);
 	printf("open n close file timer: %6.f\n", time);
-
 }
 Node* get_pnext(Node *knot) {
 	return knot->pnext;
@@ -399,5 +489,9 @@ void set_end(List *L, Node* knot1) {
 void iter(Node **knot, Node *knot1) {
 	Node *node = *knot;
 	node = knot1->pnext; // recebe proximo pnext
+
+}
+void set_size(size_t size) {
+    size_list += size;
 
 }

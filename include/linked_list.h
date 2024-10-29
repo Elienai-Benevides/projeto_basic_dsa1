@@ -6,7 +6,13 @@
 #include <string.h>
 #include <stddef.h>
 #include <time.h>
+#include <File_Template.h>
+#define NAME_RG_10M 11748444
+#define NAME_RG_10K 10000
+#define NAME_RG_1k 1000
+#define NAME_RG_10 10
 	typedef struct ListRecorder ListRecorder;
+	typedef struct File_Template File_Template;
 	//typedef struct _doubly_list List;	
 	typedef struct _doubly_node Node;
 	
@@ -22,9 +28,12 @@
 		Node  *end;
 		char filename[30];
 		//size_t size_list;
+		ListRecorder *recorder_list;
 		int id;	
 	}List;       
 	static size_t size_list = 0; 
+	
+	void set_recorder_list(List *L, ListRecorder *recorder_list);
 	int get_value(Node* curr_knot);
 	char* get_name(Node* curr_knot);
 	char* get_cpf(Node* curr_knot);
@@ -40,7 +49,7 @@
 
 	Node* create_Node(const char* name, const char* cpf);
 	char* create_string(size_t tam);
-	List* create_List();
+	List* create_List(int id);
 	void destroy_string(char** s);
 	void insert(List *L, const char*name, const char* cpf);
 	void insert_start(List *L, const char *name, const char *cpf);
@@ -54,8 +63,8 @@
 	bool is_empty(List *L);
 
 	void iter(Node **knot, Node *knot1);
+	void read_file(List *lista, File_Template *T);
 
-	void read_file(List *lista, const char *file_name);
 	double timer_count(clock_t start, clock_t end);
 	Node* get_pnext(Node *knot);
 	Node* get_pprev(Node *knot);
@@ -68,4 +77,5 @@
 	void performance(size_t *mov, size_t *comp, size_t nulling_mov, size_t nulling_comp);
 	void display(List *L);
 	void display_1(List *L);
+	void set_size(size_t size);
 #endif

@@ -30,7 +30,7 @@ Data* create_data() { //desacoplar dados
 }
 void insert_data(seq *L, const char* name, const char* rg) {
 	Data *d = L->data;
-if(curr <= size_vet) {
+if(curr < size_vet) {
 	d[curr].name = (char*)calloc((strlen(name)+1),sizeof(char));
 	if((d[curr].name  == NULL)) {printf("Erro, nao alocado em ./source/sequencial.c/insert_data\n");}
 	d[curr].rg = (char*)calloc((strlen(rg)+1),sizeof(char));
@@ -43,7 +43,7 @@ if(curr <= size_vet) {
 void insert_start_seq(seq *L, const char* name, const char* rg) {
 	Data **array = &L->data;
 	Data *ptr = *array;
-	
+	size_vet++;
 	if((ptr = realloc(ptr, size_vet * sizeof(Data)))) {
 		for(int i = 0; i < size_vet; i++) {
 			ptr[i+1] = ptr[i];
@@ -52,10 +52,16 @@ void insert_start_seq(seq *L, const char* name, const char* rg) {
 		printf("Error, reallocation\n");
 	}
 	ptr[0].name = (char*)calloc(strlen(name)+1, sizeof(char));
-	ptr[0].rg = (char*)calloc(strlen(name)+1, sizeof(char));	
+	ptr[0].rg = (char*)calloc(strlen(rg)+1, sizeof(char));	
+	strcpy(ptr[0].name, name);
+	strcpy(ptr[0].rg, rg);
 }
 void insert_index(seq *L, size_t index, const char* name, const char* rg) {
-	return;		
+	/*Data *d = L->data;
+	size_vet++;
+
+	d[index]*/
+return;	
 }
 void destroy_data(Data **data) {
 	Data *temp = *data;

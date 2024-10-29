@@ -6,7 +6,10 @@
 #include "sort_n_search.h"
 #include "ListRecorder.h"
 #include "sequencial.h"
+#include "File_Template.h"
 typedef struct Menu menu;
+typedef struct File_Template File_Template;
+//static size_t cont_id = 0;
 menu* create_Menu();
 void destroy_Menu(menu **m);
 void executar(menu *m);

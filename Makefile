@@ -14,6 +14,7 @@ libed: \
         $(OBJ)/sort_n_search.o\
 	$(OBJ)/ListRecorder.o \
 	$(OBJ)/sequencial.o \
+	$(OBJ)/File_Template.o \
 	$(OBJ)/menu.o
 	ar -rcs $(LIB)/libed.a $(OBJ)/*.o
 
@@ -31,7 +32,7 @@ $(BIN)/%: $(APPS)/%.c $(LIB)/libed.a
 run: 
 
 clean:
-	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/* ./arquivos/generic_file.txt
+	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/* ./arquivos/10.txt ./arquivos/1K.txt ./arquivos/10K.txt ./arquivos/1M.txt ./arquivos/100M.txt
 clean_apps:
 	rm -rf $(BIN)/*
 
