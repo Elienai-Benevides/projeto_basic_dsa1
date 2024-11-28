@@ -40,7 +40,7 @@ void set_id(List *L, int id) {
 char *get_filename(List *L) {
 	return L->filename;
 }
-size_t get_size(List *L) {
+size_t get_size() {
 	return size_list;
 }
 void set_value(Node *knot, int value) {
@@ -56,7 +56,7 @@ void set_filename(List *L, const char* filename) {
 	strcpy(L->filename,filename);
 }
 char* create_string(size_t tam) {
-	char *c =(char*)calloc(tam+1, sizeof(char));	
+	char *c =(char*)calloc((tam + 1), sizeof(char));	
 	return c;
 }
 void destroy_string(char **s) {
@@ -82,8 +82,8 @@ Node *create_Node(const char *name, const char *cpf) {
 	node->pprev = node->pnext = NULL;
 	return node;
 }
-List *create_List(int id){
-	List* list = (List*)calloc(1,sizeof(List));	
+List *create_List(int id, int num_listas){
+	List* list = (List*)calloc(num_listas,sizeof(List));	
 	if(list == NULL) {
 		printf("Erro ao alocar na funcao ./source/create_List\n");
 	}
@@ -94,17 +94,26 @@ List *create_List(int id){
 	list->id = id;
 	return list;		
 }
-void destroy_List(List **L) {
-List *aux = *L;
- if(!is_empty(aux)){
+void destroy_List(List ***L, int tam) {
+ if(*L != NULL){
+    List **ptr = *L;
+    for(int i = 0; i < tam; i++) {
+	List *aux = ptr[i];
+      if(!is_empty(aux)){
 	Node *itr = aux->begin;
+
 	while(itr != NULL) {
 		aux->begin = aux->begin->pnext;
 		destroy_Node(&itr);
 		itr = aux->begin;
 	}
-        free(aux);
-	*L = NULL;
+	free(ptr[i]);
+      }    
+    }
+	 free(ptr);
+	**L = NULL;
+
+
  }	
 	size_list = 0;
 }
@@ -125,29 +134,79 @@ bool is_empty(List *L) {
 	}
 	return true;
 }
-void insert(List *L, const char *name, const char *cpf) {
+void insert(List **L, const char *name, const char *cpf) {
+List *ptr = *L;
+if(ptr != NULL) {
 	clock_t start = clock();
 	Node *node = create_Node(name, cpf);
 	size_t comp, mov;
 	double time;
 	comp = mov = 0;
 	comp++;
-	if(is_empty(L)) {
+	if(is_empty(ptr)) {
 		mov++;
-		L->begin = node;
+		ptr->begin = node;
 		//L->end = node;
 	}else{
-		node->pprev = L->end;
-		L->end->pnext = node;
+		node->pprev = ptr->end;
+		ptr->end->pnext = node;
 		mov+=2;
 		//L->end = node;
 	}
-	L->end = node;
+	ptr->end = node;
 	mov++;
 	size_list++;//L->size_list++;
 	clock_t end = clock();
 	time = timer_count(start, end); 
+	/*for(int i = 0; i < strlen(node->name)+1; i++) {
+		printf("[%c] \n", node->name[i]);
+	//	printf("[%d] \n", node->cpf[i]);
+	}*/
+	/*for(int i = 0; i < strlen(node->cpf)+1; i++) {
+		printf("[%c] \n", node->cpf[i]);
+	//	printf("[%d] \n", node->cpf[i]);
+	}*/
 	printf("Insercao dos dados na lista \n Tempo: %.6f \n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
+}else{
+	printf("Lista não declarada: \n");
+}
+}
+void push(List **L, const char *name, const char *cpf) {
+List *ptr = *L;
+if(ptr != NULL) {
+	//clock_t start = clock();
+	Node *node = create_Node(name, cpf);
+	//size_t comp, mov;
+	//double time;
+	//comp = mov = 0;
+	//comp++;
+	if(is_empty(ptr)) {
+		//mov++;
+		ptr->begin = node;
+		//L->end = node;
+	}else{
+		node->pprev = ptr->end;
+		ptr->end->pnext = node;
+		//mov+=2;
+		//L->end = node;
+	}
+	ptr->end = node;
+	//mov++;
+	size_list++;//L->size_list++;
+	//clock_t end = clock();
+	//time = timer_count(start, end); 
+	/*for(int i = 0; i < strlen(node->name)+1; i++) {
+		printf("[%c] \n", node->name[i]);
+	//	printf("[%d] \n", node->cpf[i]);
+	}*/
+	/*for(int i = 0; i < strlen(node->cpf)+1; i++) {
+		printf("[%c] \n", node->cpf[i]);
+	//	printf("[%d] \n", node->cpf[i]);
+	}*/
+	//printf("Insercao dos dados na lista \n Tempo: %.6f \n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
+}else{
+	printf("Lista não declarada: \n");
+}
 }
 void insert_start(List *L, const char* name, const char* cpf) {
 	clock_t start = clock();
@@ -157,24 +216,27 @@ void insert_start(List *L, const char* name, const char* cpf) {
 	comp = mov = 0;
 if(L != NULL) {
 	Node *node = create_Node(name, cpf);
+	comp++;
 	if(!is_empty(L)) {
 		node->pnext = L->begin;
 	   	L->begin->pprev = node;	
 		L->begin = node;
-		comp += 3;
+		mov += 3;
 	}else{
 		L->begin = node;
 		L->end = node;
-		comp+=2;
+		mov+=2;
 	}
 	clock_t end = clock();
 	time = timer_count(start, end);
+	printf("LISTA LIGADA\n");
 	printf("Insercao dos dados na lista \n Tempo: %.6f\n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
 	size_list++; //L->size_list++;
 
 }else {
 	printf("Lista não existente, dados nao inseridos\n");
 }
+puts("  ");
 
 }
 void insert_middle(List *L, size_t index, const char* name, const char* cpf) {
@@ -227,7 +289,9 @@ void insert_middle(List *L, size_t index, const char* name, const char* cpf) {
 	} 
 		clock_t end = clock();
 		time = timer_count(start, end);
-		printf("Insercao dos dados na lista \n Tempo: %.6f \n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
+		printf("LISTA LIGADA\n");
+	printf("Insercao dos dados na lista \n Tempo: %.6f \n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
+	puts("  ");
 }
 void deleta(List *L, Node* node) {//neste caso ja achei meu valor especifico diferente de um while() que acha todos os valores iguais a data
 	//funcao de busca binaria
@@ -305,11 +369,13 @@ void deleta_index(List *L, size_t index) {
 	performance(&mov, &comp, 0, 0);
 	clock_t end = clock();
 	time = timer_count(start, end);
+	printf("LISTA LIGADA\n");
 	printf("Comparacoes: %ld\n Movimentacao: %ld\n", comp, mov);
 	printf("Tempo: %.6f\n", time); 
  }else{
 	printf("Está vazio, nada na lista\n");
  }	
+ puts("  ");
 }
 void deleta_middle(List *L, int value) {
 	Node *itr, *aux;
@@ -364,10 +430,11 @@ void display_1(List *L) {
 
   }
 }
-void read_file(List *lista, File_Template *T /*tamanho do arquivo*/) {
+void read_file(List **lista, File_Template *T /*tamanho do arquivo*/) {
 	clock_t start = clock();
 	double time;
 	size_t cont = 0;
+	
 	size_t ocorre = 0;
 	char* name_file = get_name_template(T);
 	printf("name template: %s", name_file);
@@ -376,17 +443,17 @@ void read_file(List *lista, File_Template *T /*tamanho do arquivo*/) {
 	  printf("Erro de abertura arquivo\n");
 	  return;
 	}
-        FileRecorder *f = create_FileRecorder();	
- 	set_FileRecorder_id(f, lista->id);
-        set_FileRecorder_name(f, get_cod_nome(T));	
-	set_FileRecorder_file(f, fopen(get_FileRecorder_name(f), "ab"));
+        //FileRecorder *f = create_FileRecorder();	
+ 	//set_FileRecorder_id(f, lista->id);
+        //set_FileRecorder_name(f, get_cod_nome(T));	
+	//set_FileRecorder_file(f, fopen(get_FileRecorder_name(f), "ab"));
 
-	if(get_FileRecorder_file(f) == NULL) {
+	/*if(get_FileRecorder_file(f) == NULL) {
 		printf("Erro ao abri arquivo, ./source/linked_list/read_file()\n");
-	}	
+	}*/	
 
-	size_t max = get_size_template(T);
-	fwrite(&max , sizeof(size_t), 1, get_FileRecorder_file(f));
+	//size_t max = get_size_template(T);
+	//fwrite(&max , sizeof(size_t), 1, get_FileRecorder_file(f));
 	char buffer[100];
 	while((fgets(buffer, sizeof(buffer) - 1, file) != NULL)) {
 		buffer[strcspn(buffer, "\n")] = '\0';
@@ -395,18 +462,16 @@ void read_file(List *lista, File_Template *T /*tamanho do arquivo*/) {
 		char *token2;
 		char limit[] = ",";
 		token1 = strtok(buffer, limit);		
-		token2 = strtok(NULL, limit);
-		for(int i = 0; i < strlen(token2)+1; i++) {
-			token2[i] = token2[i+1]; 
-		}
-		int token1_len = strlen(token1);
-	        int token2_len = strlen(token2);
+		token2 = strtok(NULL, "\0");
+	
+		push(lista, token1, token2);
+		int token1_len = strlen(token1)+1;
+	        int token2_len = strlen(token2)+1;
 
-		fwrite(&token1_len, sizeof(int), 1, get_FileRecorder_file(f));	
+		/*fwrite(&token1_len, sizeof(int), 1, get_FileRecorder_file(f));	
 		fwrite(token1, sizeof(char),token1_len, get_FileRecorder_file(f));
 		fwrite(&token2_len, sizeof(int), 1, get_FileRecorder_file(f));
-		fwrite(token2, sizeof(char), token2_len, get_FileRecorder_file(f));
-
+		fwrite(token2, sizeof(char), token2_len, get_FileRecorder_file(f));*/
 		//insert(lista, token1, token2);
 	        ocorre++;
 		//printf("size_list: %ld\n", size_list);
@@ -452,8 +517,8 @@ void read_file(List *lista, File_Template *T /*tamanho do arquivo*/) {
 		}*/	
 	}
 	fclose(file);
-	fclose(get_FileRecorder_file(f));
-	add(lista->recorder_list, f);
+	//fclose(get_FileRecorder_file(f));
+	//add(lista->recorder_list, f);
 	clock_t end = clock();
 	time = timer_count(start, end);
 	printf("open n close file timer: %6.f\n", time);
@@ -494,4 +559,35 @@ void iter(Node **knot, Node *knot1) {
 void set_size(size_t size) {
     size_list += size;
 
+}
+void find_list(List *L) {
+	clock_t start = clock();
+	double time;
+	
+	if(L != NULL) {	   
+		Node* n = get_begin(L);
+		char data[30];
+		int cont = 0;
+		bool b = false;
+		printf("Entre com o Rg");
+		scanf("%s", data);
+		while(n != NULL) {
+		 cont++;
+		    if((b = (strcmp(get_cpf(n), data) == 0))) {
+			printf("name: %s\n Rg: %s\n Indice: %d\n", 
+			get_name(n), get_cpf(n), (cont));				
+		   	break;	
+		    }
+				  		
+		    n = get_pnext(n);
+		}
+		    printf("retorno b: %d \n", b);
+		    b == true ? printf("Encontrado\n") : printf("N Encontrado\n"); 
+	}
+	clock_t end = clock();
+	time = timer_count(start, end);
+	printf("LISTA LIGADA\n");
+
+	printf("Tempo: %.6f \n", time);
+	puts(" ");
 }

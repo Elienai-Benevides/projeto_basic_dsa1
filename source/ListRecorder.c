@@ -94,8 +94,8 @@ if(L != NULL) {
 	//depois de abrir o arquivo da lista ordenada em sort_list;
 	//new document serializated
      if(f->file != NULL) {			
-        size_t tam = get_size(lista);
-	printf("TAMAHO DA LISTA N SERIALIZA: %ld\n", tam);
+        size_t tam = get_size();
+	
 	Node *itr = lista->begin;//reduz o tamanho da estrutura
 	//open_succes(fwrite(&(f->id), sizeof(int), 1, f->file));
 	open_succes(fwrite(&tam, sizeof(size_t), 1, f->file));
@@ -129,7 +129,7 @@ void open_succes(int b) {
 //funcao p lista
 List* deserializa(ListRecorder *L, int id) { //deserializo uma lista que ja foi ordenada por sort_list na id de lista.
 	FileRecorder *file = NULL;
-	List *lista = create_List(id);
+	List *lista = create_List(id, 1);
         file = search_id(L, id);
 	//printf("primeiro file %d\n", L->start->id);
         //criar lista again                
@@ -140,8 +140,7 @@ List* deserializa(ListRecorder *L, int id) { //deserializo uma lista que ja foi 
 	  int id = 0;
 	  int tam_name = 0;
 	  int tam_cpf = 0;
-	  fread(&tam_list, sizeof(size_t), 1, file->file);
-	  printf("tam_list : %ld\n", tam_list);
+	  fread(&tam_list, sizeof(size_t), 1, file->file);	  
 	  int i = 0;
 	  printf("./source/deseri = %ld\n", tam_list);
 	  while(i < tam_list) {
