@@ -462,8 +462,7 @@ void read_file(List **lista, File_Template *T /*tamanho do arquivo*/) {
 		char *token2;
 		char limit[] = ",";
 		token1 = strtok(buffer, limit);		
-		token2 = strtok(NULL, "\0");
-	
+		token2 = strtok(NULL, "\0");	
 		push(lista, token1, token2);
 		int token1_len = strlen(token1)+1;
 	        int token2_len = strlen(token2)+1;

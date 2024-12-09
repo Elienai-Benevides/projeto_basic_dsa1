@@ -88,7 +88,6 @@ void insertion(sort_list *L) {
    }
 }
 void insertion_seq(sort_list *L , size_t tam) {
-
 	if(L && L->sequencial) {
 	seq *ptr = L->sequencial;
 
@@ -248,7 +247,7 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 			strcpy(array[i].rg, vector);
 			ind = i;	
 	    	} 
-	    } 
+	   } 
 	}*/
 	size_t k = (init - 1);
 	//strcpy(pivot, array[index].rg);

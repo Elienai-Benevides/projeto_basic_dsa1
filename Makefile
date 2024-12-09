@@ -32,7 +32,7 @@ $(BIN)/%: $(APPS)/%.c $(LIB)/libed.a
 run: 
 
 clean:
-	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/* ./arquivos/10.txt ./arquivos/1K.txt ./arquivos/10K.txt ./arquivos/1M.txt ./arquivos/100M.txt
+	rm -rf $(BIN)/* $(OBJ)/* $(LIB)/* ./arquivos/*
 clean_apps:
 	rm -rf $(BIN)/*
 
