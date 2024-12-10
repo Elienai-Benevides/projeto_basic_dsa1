@@ -25,9 +25,10 @@ void selection(sort_list *L, size_t tam);
 void bubble(sort_list *L, size_t tam);
 void MergeSort(sort_list *L, size_t init, size_t tam);
 void merge(sort_list *L, size_t init, size_t middle, size_t tam);
-void shell(sort_list *L, size_t tam);
+void ShellSort(sort_list *L, size_t tam);
 void QuickSort(sort_list *L, size_t init , size_t tam);
 size_t partition (sort_list *L, size_t init , size_t tam);
+void Binary_Search(sort_list *L, const char *key, int init, int end);
 #endif
 
 

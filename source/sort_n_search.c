@@ -216,21 +216,44 @@ void MergeSort(sort_list *L, size_t init, size_t tam) {
 		merge(L, init, q, tam);
 	}
 }
-void shell(sort_list *L, size_t tam);
+void ShellSort(sort_list *L, size_t tam) {
+	seq *p = L->sequencial;
+	Data *array = get_begin_seq(p);
+
+	for(int interval = tam / 2; interval > 0; interval /= 2) {
+		for(int i = interval; i < tam; i += 1) {
+		        char key[30];
+		        char key_name[30];
+			char t[50];
+			strcpy(key, array[i].rg);
+			strcpy(key_name, array[i].name);
+			int j;
+			for(j = i; (j >= interval) && (atoi(key) < atoi(array[j - interval].rg)); j-=interval) {
+			strcpy(array[j].rg, array[j - interval].rg);
+			strcpy(t, array[j].name);
+			strcpy(array[j].name, array[j - interval].name);
+			strcpy(array[j - interval].name, t);
+			}
+			strcpy(array[j].rg, key);
+		}
+	 }
+}
 void QuickSort(sort_list *L, size_t init , size_t tam) {
    if(init < tam) {
 	size_t index = partition(L, init, tam);
 	QuickSort(L, init, index-1);
 	QuickSort(L, index+1, tam);
-   }	
+   }else{
+	return;	
+   }	   
 }
 size_t partition (sort_list *L, size_t init , size_t tam) {
 	seq *p = L->sequencial;
 	Data *array = get_begin_seq(p);
 	//int buff = sizeof(array) / sizeof(array[0]);
-	size_t index = init + ((tam - init) / 2);
+	size_t index = tam;//init + (tam - init) / 2;
 	char pivot[(strlen(array[index].rg)+1)];
-	char vector[20];
+	char vector[50];
 	//static int ind;
 	/*while (i < tam) { 
 	    for (int j = i+1; j < tam; j++) {
@@ -249,9 +272,9 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 	    	} 
 	   } 
 	}*/
-	size_t k = (init - 1);
-	//strcpy(pivot, array[index].rg);
-	for(size_t i = init; i < tam; i++) {
+	int k = (init - 1);
+	strcpy(pivot, array[index].rg);
+	for(int i = init; i < tam; i++) {
 		if(atoi(array[i].rg) <= atoi(array[index].rg)) {
 		k++;//conta indice
 		    strcpy(vector, array[i].rg);
@@ -259,8 +282,7 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 		    strcpy(array[k].rg, vector); // hard coding, poderiamos fazer uma funcao swap	
 		    strcpy(vector, array[i].name);
 		    strcpy(array[i].name, array[k].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
-	            strcpy(array[k].name, vector);
-				    
+	            strcpy(array[k].name, vector);			    
 		}
 	}
 	strcpy(vector, array[k + 1].rg);
@@ -268,8 +290,31 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 	strcpy(array[index].rg, vector);
     		
 	strcpy(vector, array[k + 1].name);
-	strcpy(array[k + 1].name, array[index].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
+	strcpy(array[k + 1 ].name, array[index].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
 	strcpy(array[index].name, vector);
 
-	return k+1;//return ind;
+	return k + 1;//return ind;
+}
+void Binary_Search(sort_list *L, const char *key, int init, int end) {
+	seq *ptr = L->sequencial ;
+	Data *array = get_begin_seq(ptr);
+
+	if(init > end) {
+		return;
+	}else{
+		if(!key){return;}
+		int mid = (init + end) / 2;
+		if (array[mid].rg == NULL) {
+        		printf("Erro: Elemento na posição %d possui campo rg nulo.\n", mid);
+			return;
+    		}
+		if(atoi(key) ==  atoi(array[mid].rg)) {
+			printf("Rg encontrado: %s" , array[mid].rg);
+			printf("Indice: %d", mid + 1);
+		}else if(atoi(key) > atoi(array[mid].rg)) {
+			Binary_Search(L, key, mid+1, end);	
+		}else {
+			Binary_Search(L, key, init, mid-1);
+		}	
+	}
 }

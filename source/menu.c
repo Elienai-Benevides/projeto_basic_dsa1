@@ -158,8 +158,34 @@ void executar(menu *m) {
 			   }
 		   break;
 		   case 7: { 
-				   find_list(m->listas[itr_list]);
-				   find_list_seq(m->seq_list[itr_seq]);
+				int o = 0;
+
+				while(o != 3) {
+				  	printf("1)Busca sequencial\n");
+					printf("2)Busca Binária\n");
+					printf("3)Sair\n");
+					char c;
+					if(!handle_alphanum(&o, c)) { continue; }
+				  if(o == 1){	   
+				   	find_list(m->listas[itr_list]);
+				   	find_list_seq(m->seq_list[itr_seq]);
+				  }else if (o == 2) {
+					char key[30];
+					printf("Entre com o Dado: \n");
+					scanf("%s", key);
+					clock_t start = clock();
+					double time;
+
+					Binary_Search(m->list_sort, key, 0, get_size_vet(m->seq_list[itr_list]) - 1);
+					clock_t end_ = clock();
+					time = timer_count(start, end_);
+					printf("Tempo: %.6f \n", time);
+					puts(" ");
+
+				  }else if(o == 3) {
+					printf("Saindo... ou Entrada desconhecida\n");
+				  }
+				}	  
 
 	 /*binary_search*/ }
 		   break;
@@ -187,7 +213,7 @@ void executar(menu *m) {
 					}else if(opt == 5) {
 							QuickSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);	
 					}else if(opt == 6) {
-						printf("opcao 1\n"); 
+							ShellSort(m->list_sort, get_size_vet(m->seq_list[itr_seq])); 
 					}else{
 						printf("Saindo...\n");
 					}
