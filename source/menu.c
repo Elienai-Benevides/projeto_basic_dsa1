@@ -1,4 +1,6 @@
 #include "menu.h"
+#include "linked_list.h"
+#include <time.h>
 typedef struct Menu {
 	List **listas;
 	sort_list *list_sort;
@@ -63,7 +65,7 @@ void listar(seq **sequencial, List **linked) {
 
 		printf("|%d)Nome2: %s|\n",cont, get_name(itr));
 
-		printf("|Rg1: %s", get_rg_seq(set_next_seq(&seq, i)));
+		printf("|Rg1: %d", get_rg_seq(set_next_seq(&seq, i)));
 		printf("\t\t\t\t\t\t\t");
 	
 		printf("|Rg2: %s|\n",get_cpf(itr));
@@ -77,7 +79,8 @@ void listar(seq **sequencial, List **linked) {
 }
 void executar(menu *m) {
 	int op = 0;
-	char name[30], cpf[30];
+	char name[30];
+	int rg;
 	int index;
 	char filename[30];
 
@@ -106,10 +109,10 @@ void executar(menu *m) {
 			           printf("NOME:\n");
 				   scanf("%s", name);
 				   printf("RG:\n");
-				   scanf("%s", cpf);
+				   scanf("%d", &rg);
 
-				   insert_start(m->listas[itr_list], name, cpf);
-				   insert_start_seq(m->seq_list[itr_seq], name, cpf);
+				   insert_start(m->listas[itr_list], name, (char*)rg);
+				   insert_start_seq(m->seq_list[itr_seq], name, rg);
 
 			           //printf("tamanho lista = %ld!", get_size(m->listas[itr_list])); 
 			   }
@@ -119,12 +122,12 @@ void executar(menu *m) {
 			           printf("NOME:\n");
 				   scanf("%s", name);
 				   printf("RG:\n");
-				   scanf("%s", cpf);
+				   scanf("%d", &rg);
 				   printf("INDIce\n");
 				   scanf("%d", &index);
 				   
-				   insert_middle(m->listas[itr_list], index-1, name, cpf);
-				   insert_index_seq(m->seq_list[itr_seq], index, name, cpf);
+				   insert_middle(m->listas[itr_list], index-1, name, (char*)rg);
+				   insert_index_seq(m->seq_list[itr_seq], index, name, rg);
 			}
 		   break;
 		   case 3: { 
@@ -132,10 +135,10 @@ void executar(menu *m) {
 			           printf("NOME:\n");
 				   scanf("%s", name);
 				   printf("RG:\n");
-				   scanf("%s", cpf);
+				   scanf("%d", &rg);
 
-				   insert(&(m->listas[itr_list]), name, cpf);
-				   insert_end_seq(m->seq_list[itr_seq], name, cpf);
+				   insert(&(m->listas[itr_list]), name, (char*)rg);
+				   insert_end_seq(m->seq_list[itr_seq], name, rg);
 			   }
 		   break;
 		   case 4: { 	 			
@@ -203,17 +206,57 @@ void executar(menu *m) {
 					if(!handle_alphanum(&opt, c)) { continue;}
 					
 					if (opt == 1) {
-						bubble(m->list_sort, get_size_vet(m->seq_list[itr_seq]));	
+float time;
+ 							clock_t start = clock();
+bubble(m->list_sort, get_size_vet(m->seq_list[itr_seq]));	
+							clock_t end = clock();
+							time = timer_count(start, end);
+							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 
+							
 					}else if(opt == 2) {
-						selection(m->list_sort, get_size_vet(m->seq_list[itr_seq]));
+
+					float time;
+ 							clock_t start = clock();
+selection(m->list_sort, get_size_vet(m->seq_list[itr_seq]));
+							clock_t end = clock();
+							time = timer_count(start, end);
+							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 
+						//selection(m->list_sort, get_size_vet(m->seq_list[itr_seq]));
 					}else if(opt == 3) {
-						insertion_seq(m->list_sort, get_size_vet(m->seq_list[itr_seq])); 
+float time;
+ 							clock_t start = clock();
+	insertion_seq(m->list_sort, get_size_vet(m->seq_list[itr_seq])); 
+							clock_t end = clock();
+							time = timer_count(start, end);
+							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 
+						//insertion_seq(m->list_sort, get_size_vet(m->seq_list[itr_seq])); 
 					}else if(opt == 4) {
-							MergeSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);
+float time;
+ 							clock_t start = clock();
+	MergeSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);
+
+							clock_t end = clock();
+							time = timer_count(start, end);
+							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 
+							//MergeSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);
 					}else if(opt == 5) {
-							QuickSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);	
+float time;	
+						clock_t start = clock();
+
+							QuickSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);
+							clock_t end = clock();
+							time = timer_count(start, end);
+							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 
 					}else if(opt == 6) {
-							ShellSort(m->list_sort, get_size_vet(m->seq_list[itr_seq])); 
+float time; 	
+						clock_t start = clock();
+	ShellSort(m->list_sort, get_size_vet(m->seq_list[itr_seq]));
+
+							clock_t end = clock();
+							time = timer_count(start, end);
+							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 
+							//ShellSort(m->list_sort, get_size_vet(m->seq_list[itr_seq]));
+						        	
 					}else{
 						printf("Saindo...\n");
 					}
@@ -231,9 +274,9 @@ void executar(menu *m) {
 			    }
 		   break;
 		   case 11: { 	
-				char name_file[30] = {"./arquivos/NomeRG10.txt" };
+				char name_file[30];//{"./arquivos/NomeRG100.txt" };
 					printf("Entre com nome do arquivo: \n");
-					//scanf("%s", name_file);					  				
+					scanf("%s", name_file);					  				
 					//set_recorder_list(m->list, m->list_recorder);
 					set_name_template(m->template_file, name_file);
 					//set_size_template(m->template_file, 10);

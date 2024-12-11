@@ -12,7 +12,7 @@ typedef struct sort_n_search {
 void swap_string(char **s1, char **s2) {
 	char *derref = *s1;
 	char *derref1 = *s2;
-	char temp[strlen(derref) + 1];
+	char *temp = (char*)calloc((strlen(derref) + 1), sizeof(char));
 
 	strcpy(temp, derref);
 	strcpy(derref, derref1);
@@ -238,12 +238,15 @@ void ShellSort(sort_list *L, size_t tam) {
 		}
 	 }
 }
+
 void QuickSort(sort_list *L, size_t init , size_t tam) {
+
    if(init < tam) {
 	size_t index = partition(L, init, tam);
 	QuickSort(L, init, index-1);
 	QuickSort(L, index+1, tam);
    }else{
+	//printf("Comp: %ld \n mov: %ld \n", compara, move);
 	return;	
    }	   
 }
@@ -251,7 +254,7 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 	seq *p = L->sequencial;
 	Data *array = get_begin_seq(p);
 	//int buff = sizeof(array) / sizeof(array[0]);
-	size_t index = tam;//init + (tam - init) / 2;
+	size_t index = tam; //init + (tam - init) / 2;
 	char pivot[(strlen(array[index].rg)+1)];
 	char vector[50];
 	//static int ind;
@@ -275,6 +278,7 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 	int k = (init - 1);
 	strcpy(pivot, array[index].rg);
 	for(int i = init; i < tam; i++) {
+		//(*comp)++;
 		if(atoi(array[i].rg) <= atoi(array[index].rg)) {
 		k++;//conta indice
 		    strcpy(vector, array[i].rg);
@@ -282,17 +286,19 @@ size_t partition (sort_list *L, size_t init , size_t tam) {
 		    strcpy(array[k].rg, vector); // hard coding, poderiamos fazer uma funcao swap	
 		    strcpy(vector, array[i].name);
 		    strcpy(array[i].name, array[k].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
-	            strcpy(array[k].name, vector);			    
+	            strcpy(array[k].name, vector);
+		    //(*mov)++;		    
 		}
 	}
-	strcpy(vector, array[k + 1].rg);
-	strcpy(array[k + 1].rg, array[index].rg);
+	strcpy(vector, array[k].rg);
+	strcpy(array[k].rg, array[index].rg);
 	strcpy(array[index].rg, vector);
+	//(*mov)++;
     		
-	strcpy(vector, array[k + 1].name);
-	strcpy(array[k + 1 ].name, array[index].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
+	strcpy(vector, array[k].name);
+	strcpy(array[k].name, array[index].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
 	strcpy(array[index].name, vector);
-
+	//(*mov)++;
 	return k + 1;//return ind;
 }
 void Binary_Search(sort_list *L, const char *key, int init, int end) {
@@ -318,3 +324,55 @@ void Binary_Search(sort_list *L, const char *key, int init, int end) {
 		}	
 	}
 }
+
+/*	clock_t start = clock();
+	size_t mov, comp;
+	mov = comp = 0 ;
+	double time;
+	if(!is_empty(L)) {
+		Node *itr = L->begin;
+		size_t i = 0;
+	    if(index <= size_list) {
+		while(i < index) {	
+	  		itr = itr->pnext;
+			mov++;
+			i++;
+		}
+		comp++;
+		if((itr == L->begin) && (itr == L->end)){
+			node->pnext = L->begin;			
+			L->begin->pprev = node;
+			L->begin = node;
+			L->end = node;
+			mov += 4;
+
+		}else if(itr->pprev == NULL){
+				node->pnext = L->begin;
+				node->pprev = L->begin->pprev;
+				L->begin->pprev = node;
+				L->begin = node;
+				mov+=4;
+		}else if(itr->pnext == NULL) {
+				node->pprev = L->end->pprev;
+				node->pnext = L->end;
+				L->end->pprev = node;
+				mov += 3;
+
+		}else{
+				node->pnext = itr;
+				itr->pprev->pnext = node;
+				node->pprev = itr->pprev;
+				itr->pprev = node;
+				mov += 4;		
+		}
+		size_list++;//L->size_list++;
+	   }else{
+		printf("Indice inexistente, e maior que tamanho a lista: %ld", size_list);
+		
+	   }	   
+	} 
+		clock_t end = clock();
+		time = timer_count(start, end);
+		printf("LISTA LIGADA\n");
+	printf("Insercao dos dados na lista \n Tempo: %.6f \n Nome:%s\n Rg:%s\n Comparacoes: %ld\n Movimentacao: %ld\n", time, node->name, node->cpf, comp, mov);
+*/

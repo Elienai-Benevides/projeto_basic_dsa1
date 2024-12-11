@@ -8,6 +8,7 @@
 typedef struct sort_n_search sort_list;
 typedef struct ListRecorder ListRecorder;
 
+
 //typedef struct _doubly_list List;
 //typedef struct _doubly_node Node;
 void swap_string(char **s1, char **s2);
