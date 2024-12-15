@@ -120,7 +120,54 @@ if(L != NULL) {
 }else{
 	printf("ListaRecorder n existe\n");
 }
-}
+}/*
+void serializa(ListRecorder *L , seq *lista) {
+   if(L != NULL) {	
+	FileRecorder *founded = search_id(L, lista->id);
+	FileRecorder *f = NULL; 
+	
+	if(!founded) {
+		f = create_FileRecorder();
+		f->id = get_id(lista);//atribui id a lista dps de ordenada    	
+		open_file(f, "./arquivos/generic_file.txt");//arquivo da lista dps ordenada
+	        strcpy(f->file_name, "./arquivos/generic_file.txt");//get_filename(lista));
+	}else {
+		f = founded;
+		printf("Achou! f->name:%s, f->id: %d\n", f->file_name, f->id);
+		f->file = fopen(f->file_name, "wb");
+	}
+
+	//open_file(f,"./arquivos/generic_file.txt");//arquivo da lista dps ordenada
+	//depois de abrir o arquivo da lista ordenada em sort_list;
+	//new document serializated
+     if(f->file != NULL) {			
+        size_t tam = get_size();
+	
+	Node *itr = lista->begin;//reduz o tamanho da estrutura
+	//open_succes(fwrite(&(f->id), sizeof(int), 1, f->file));
+	open_succes(fwrite(&tam, sizeof(size_t), 1, f->file));
+	while(itr != NULL) {	
+		int s_1 = strlen(itr->name);//+1;
+		int s_2 = strlen(itr->cpf);//+1;
+		//open_succes(fwrite(itr,sizeof(Node),1, f->file));
+		open_succes(fwrite(&s_1, sizeof(int),1, f->file));
+		open_succes(fwrite(itr->name, sizeof(char), s_1, f->file));
+		open_succes(fwrite(&s_2, sizeof(int),1, f->file));
+		open_succes(fwrite(itr->cpf, sizeof(char), s_2, f->file));
+		
+		itr =  itr->pnext;//funcao iteradora	
+	}
+	if(!founded) {
+		add(L, f);
+	}
+     }else{
+	printf("file nullo em ./source/ListRecorder/serializa\n");	
+     }	     
+	close_file(f);
+  }else{
+	printf("ListaRecorder n existe\n");
+  }
+}*/	
 void open_succes(int b) {
 	if(!b){
 		printf("fracasso\n");

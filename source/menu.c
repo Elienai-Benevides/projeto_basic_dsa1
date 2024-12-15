@@ -173,9 +173,9 @@ void executar(menu *m) {
 				   	find_list(m->listas[itr_list]);
 				   	find_list_seq(m->seq_list[itr_seq]);
 				  }else if (o == 2) {
-					char key[30];
+					int key;
 					printf("Entre com o Dado: \n");
-					scanf("%s", key);
+					scanf("%d", &key);
 					clock_t start = clock();
 					double time;
 
@@ -243,7 +243,7 @@ float time;
 float time;	
 						clock_t start = clock();
 
-							QuickSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]) - 1);
+							QuickSort(m->list_sort, 0, get_size_vet(m->seq_list[itr_seq]));
 							clock_t end = clock();
 							time = timer_count(start, end);
 							printf("Insercao dos dados na lista \n Tempo: %.6f", time); 

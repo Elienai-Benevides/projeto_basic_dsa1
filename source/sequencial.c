@@ -46,10 +46,10 @@ Data *get_data(seq *L) {
 char* get_name_seq(Data *data) {
     return data->name;
 }
-int get_rg_seq(Data *data) {
+unsigned int get_rg_seq(Data *data) {
     return data->rg;
 }
-void insert_data(seq *L, const char* name, int rg) {
+void insert_data(seq *L, const char* name, unsigned int rg) {
 	
 	
 	Data *d = L->data;
@@ -65,9 +65,9 @@ if(curr < size_vet) {
 
 }
 }
-void insert_start_seq(seq *L, const char* name, int rg) {
+void insert_start_seq(seq *L, const char* name, unsigned int rg) {
 	clock_t start = clock();
-	size_t comp, mov;
+	int comp, mov;
 	double time;
 	comp = mov = 0;
 	Data **array = &L->data;
@@ -94,11 +94,11 @@ void insert_start_seq(seq *L, const char* name, int rg) {
 	}
 	clock_t end = clock();
         time = timer_count_seq(start, end);
-        printf("Insercao dos dados na lista SEQUENCIAL \n Tempo: %.6f\n Nome:%s\n Rg:%d\n Comparacoes: %ld\n Movimentacao: %ld\n", time, new[0].name, new[0].rg, comp, mov);
+        printf("Insercao dos dados na lista SEQUENCIAL \n Tempo: %.6f\n Nome:%s\n Rg:%u\n Comparacoes: %d\n Movimentacao: %d\n", time, new[0].name, new[0].rg, comp, mov);
 }
-void insert_index_seq(seq *L, size_t index, const char* name, int rg) {
+void insert_index_seq(seq *L, int index, const char* name, unsigned int rg) {
 	clock_t start = clock();
-	size_t mov, comp;
+	int mov, comp;
 	mov = comp = 0;
 	double time;
 	Data **array = &L->data;
@@ -126,13 +126,13 @@ void insert_index_seq(seq *L, size_t index, const char* name, int rg) {
   }
   clock_t end = clock();
   time = timer_count_seq(start, end);
-  printf("Insercao dos dados na lista SEQUENCIAL\n Tempo: %.6f \n Nome:%s\n Rg:%d\n Comparacoes: %ld\n Movimentacao: %ld\n", time, new[index-1].name, new[index-1].rg, comp, mov);
+  printf("Insercao dos dados na lista SEQUENCIAL\n Tempo: %.6f \n Nome:%s\n Rg:%u\n Comparacoes: %d\n Movimentacao: %d\n", time, new[index-1].name, new[index-1].rg, comp, mov);
 
 
 }
-void insert_end_seq(seq *L, const char* name, int rg) {
+void insert_end_seq(seq *L, const char* name, unsigned int rg) {
 	clock_t start = clock();
-	size_t mov, comp;
+	int mov, comp;
 	double time;
 	mov = comp = 0;
 	Data **array = &L->data;
@@ -156,7 +156,7 @@ void insert_end_seq(seq *L, const char* name, int rg) {
 	}
 	 clock_t end = clock();
   	time = timer_count_seq(start, end);
- 	 printf("Insercao dos dados na lista SEQUENCIAL\n Tempo: %.6f \n Nome:%s\n Rg:%d\n Comparacoes: %ld\n Movimentacao: %ld\n", time, new[size_vet-1].name, new[size_vet-1].rg, comp, mov);
+ 	 printf("Insercao dos dados na lista SEQUENCIAL\n Tempo: %.6f \n Nome:%s\n Rg:%u\n Comparacoes: %d\n Movimentacao: %d\n", time, new[size_vet-1].name, new[size_vet-1].rg, comp, mov);
 }
 void destroy_data(Data **data) {
 	Data *temp = *data;
@@ -211,7 +211,7 @@ void display_sequencial(seq *L) {
 	int i = 0;
 	while(i < size_vet) {
 		cont++;
-		printf("%d)Nome: %s\n Rg: %d\n", cont, itr[i].name, itr[i].rg);
+		printf("%d)Nome: %s\n Rg: %u\n", cont, itr[i].name, itr[i].rg);
 		puts("  ");
 		i++;
 	}
@@ -242,7 +242,7 @@ return size_vet;
 size_t get_curr(seq *L) {
 	return curr;
 }
-void resize(seq *L, size_t tam) {	
+void resize(seq *L, int tam) {	
 	if(L != NULL) {
 		Data *temp = L->data;
 		Data **ptr = &L->data;
@@ -280,7 +280,7 @@ void resize(seq *L, size_t tam) {
 }
 void remove_seq(seq *L, int index) {
 	clock_t start = clock();
-	size_t comp, mov;
+	int comp, mov;
 	double time;
 	comp = mov = 0;
 	if(((index-1) < 0) || ((index-1) >= size_vet)) {
@@ -316,7 +316,7 @@ void remove_seq(seq *L, int index) {
 	}
 	clock_t end = clock();
 	time = timer_count_seq(start, end);
-	printf("Tempo: %.6f \n Comparações: %ld\n Movimentações: %ld\n", time, comp, mov);
+	printf("Tempo: %.6f \n Comparações: %d\n Movimentações: %d\n", time, comp, mov);
 }
 Data* set_next_seq(Data **data, int i) {
 	Data *itr = *data;
@@ -325,7 +325,7 @@ Data* set_next_seq(Data **data, int i) {
 void find_list_seq(seq *L) {
 	clock_t start = clock();
 	double time;
-	size_t mov, comp;
+	int mov, comp;
 	comp = mov = 0;
 	if(L != NULL) {   
 		int data;
@@ -339,7 +339,7 @@ void find_list_seq(seq *L) {
 		cont++;
 		     if((b = get_rg_seq(&d[i]) == data)) {
 			printf("SEQUENCIAL<->\n");
-			printf("Nome: %d\n Rg: %d\n Indice: %d\n", 
+			printf("Nome: %s\n Rg: %u\n Indice: %d\n", 
 			get_name_seq(&d[i]), get_rg_seq(&d[i]), (cont));				
 		   	break;
 		     }		     

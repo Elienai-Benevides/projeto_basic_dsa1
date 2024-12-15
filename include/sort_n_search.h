@@ -5,13 +5,16 @@
 #include "linked_list.h"
 #include "sequencial.h"
 #include <string.h>
+#include <stdint.h>
 typedef struct sort_n_search sort_list;
 typedef struct ListRecorder ListRecorder;
-
+static size_t c = 0;
+static size_t m = 0;
 
 //typedef struct _doubly_list List;
 //typedef struct _doubly_node Node;
 void swap_string(char **s1, char **s2);
+void fit_string(char **s1, char **s2);
 List* get_list(sort_list *list);
 List** get_address_list(sort_list *list);
 sort_list* create_sort_n_search();
@@ -27,9 +30,8 @@ void bubble(sort_list *L, size_t tam);
 void MergeSort(sort_list *L, size_t init, size_t tam);
 void merge(sort_list *L, size_t init, size_t middle, size_t tam);
 void ShellSort(sort_list *L, size_t tam);
-void QuickSort(sort_list *L, size_t init , size_t tam);
-size_t partition (sort_list *L, size_t init , size_t tam);
-void Binary_Search(sort_list *L, const char *key, int init, int end);
+void QuickSort(sort_list *L, int init, int tam);
+void Binary_Search(sort_list *L, int key, int init, int end);
 #endif
 
 

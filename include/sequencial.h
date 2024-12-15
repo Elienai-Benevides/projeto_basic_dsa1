@@ -9,7 +9,7 @@
 //typedef struct Data Data;
 typedef struct Data {
 	char* name;
-	int rg;
+	unsigned int rg;
 }Data;
 typedef struct sequencial{
 	Data *data;
@@ -20,20 +20,20 @@ double timer_count_seq(clock_t start, clock_t end);
 Data *get_begin_seq(seq *L);
 seq* create_sequencial();
 Data* create_data();
-void insert_data(seq *L, const char* name, int rg);
+void insert_data(seq *L, const char* name, unsigned int rg);
 void destroy_data(Data **data);
 void destroy_seq(seq ***L, int tam);
 void display_sequencial(seq *L);
 size_t get_size_vet(seq *L);
 Data *get_data(seq *L);
 char* get_name_seq(Data *data);
-int get_rg_seq(Data *data);
+unsigned int get_rg_seq(Data *data);
 Data* set_next_seq(Data **data, int i);
 void read_file_sequencial(seq **L, const char* file_name);
-void resize(seq *L, size_t tam);
-void insert_index_seq(seq *L, size_t index, const char* name, int rg);
-void insert_start_seq(seq *L, const char* name, int rg);
-void insert_end_seq(seq *L, const char* name, int rg);
-void remove_seq(seq *L,int index);
+void resize(seq *L, int tam);
+void insert_index_seq(seq *L, int index, const char* name, unsigned int rg);
+void insert_start_seq(seq *L, const char* name, unsigned int rg);
+void insert_end_seq(seq *L, const char* name, unsigned int rg);
+void remove_seq(seq *L, int index);
 void find_list_seq(seq *L);
 #endif

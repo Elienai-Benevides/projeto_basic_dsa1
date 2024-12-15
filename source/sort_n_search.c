@@ -10,13 +10,27 @@ typedef struct sort_n_search {
 	//funcao serializa aqui e deserializa na Lista
 }sort_list;
 void swap_string(char **s1, char **s2) {
-	char *derref = *s1;
-	char *derref1 = *s2;
-	char *temp = (char*)calloc((strlen(derref) + 1), sizeof(char));
-
-	strcpy(temp, derref);
-	strcpy(derref, derref1);
-	strcpy(derref1, temp);
+	        char *n;
+		n = NULL;
+		n = (char*)calloc((strlen(*s1) + 1), sizeof(char));
+		strcpy(n, *s1);
+		char *ptr_char;
+		if((ptr_char = realloc(*s1, strlen(*s2) + 1))) {
+	        	*s1 = ptr_char;
+		}
+		strcpy(*s1, *s2);
+	        if((ptr_char = realloc(*s2, (strlen(n) + 1)))) {
+			*s2 = ptr_char;
+		}
+		strcpy(*s2, n);
+		free(n);
+}
+void fit_string(char **s1, char **s2) {
+		char *ptr_char;
+		if((ptr_char = realloc(*s1, strlen(*s2) + 1))) {
+	        	*s1 = ptr_char;
+		}
+		strcpy(*s1, *s2);
 }
 void afilia_list(sort_list *list, List *L) {
 	list->lista = L;
@@ -45,7 +59,7 @@ sort_list* create_sort_n_search() {
 	return s;
 }
 void destroy_sort_n_search(sort_list** list) {
-	sort_list *s = *list;
+     sort_list *s = *list;
      if(s != NULL) {	
 		//List *l = s->lista;
 		//ListRecorder *list_recorder = s->lista_recorder;	
@@ -93,17 +107,17 @@ void insertion_seq(sort_list *L , size_t tam) {
 
 	Data *array = get_begin_seq(ptr); 
 		for(int i = 1; i < tam; i++) {
-			char key_rg[20];
+			int key_rg;
 			char key_name[20];
-			strcpy(key_rg, array[i].rg);
+			key_rg = array[i].rg;
 			strcpy(key_name, array[i].name);
 			int j = i - 1;
-			while((j >= 0) && (atoi(key_rg) < atoi(array[j].rg))){	
-				strcpy(array[j + 1].rg, array[j].rg);
+			while((j >= 0) && (key_rg < array[j].rg)){	
+				array[j + 1].rg = array[j].rg;
 				strcpy(array[j + 1].name, array[j].name);
 				--j;	
 			}
-			strcpy(array[j+1].rg, key_rg);
+			array[j+1].rg = key_rg;
 			strcpy(array[j+1].name, key_name);
 		}
 	}else{ printf("Classe que ordena ou ponteiro para lista sequencial, vazios\n");	}
@@ -114,25 +128,25 @@ if(L && L->sequencial) {
 	Data *array = get_begin_seq(ptr);
 	int maior = 0;
 	for (int i = tam - 1; i >= 0; i--) {	
-		maior = atoi(array[i].rg);
+		maior = array[i].rg;
 		int k = 0;
 		int index = 0;
 		while(k < i) {
-			if(atoi(array[k].rg) > maior) {
-				maior = atoi(array[k].rg);
+			if(array[k].rg > maior) {
+				maior = array[k].rg;
 				index = k;
 			}
 			k++;
 		}
-		char key_rg[20];
+		int key_rg;
 		char key_name[20];
-		strcpy(key_rg, array[i].rg);
+		key_rg = array[i].rg;
 		strcpy(key_name, array[i].name);
-		strcpy(array[i].rg, array[index].rg);
+		array[i].rg = array[index].rg;
 		strcpy(array[i].name, array[index].name);
-		strcpy(array[index].rg, key_rg);
+		array[index].rg = key_rg;
 		strcpy(array[index].name, key_name);
-	}
+         }
 }else { printf("Classe que ordena ou ponteiro para lista sequencial, vazios\n");	       }//to do em linked_list
 }
 void bubble(sort_list *L, size_t tam) {
@@ -140,8 +154,11 @@ void bubble(sort_list *L, size_t tam) {
 	Data *array = get_begin_seq(ptr);
 	for(int i = 0; i < tam; i++) {
 		for(int j = 1; j < tam; j++) {	
-			if(atoi(array[j].rg) < atoi(array[j-1].rg)) {	
-				swap_string(&array[j].rg, &array[j-1].rg);
+			if(array[j].rg < array[j-1].rg) {
+				int aux;
+				aux = array[j].rg;	
+				array[j].rg  = array[j-1].rg;
+				array[j-1].rg = aux;
 				swap_string(&array[j].name, &array[j-1].name);
 			}
 		}	
@@ -152,20 +169,22 @@ void merge(sort_list *L, size_t init, size_t middle, size_t tam) {
 	int size_s2 = tam - middle;
 	seq  *ptr  = L->sequencial;
 	Data *array = get_begin_seq(ptr);
-	Data s1[size_s1], s2[size_s2];
-	
+	//Data s1[size_s1], s2[size_s2];
+	Data *s1, *s2;
+	s1 = (Data*)calloc(size_s1, sizeof(Data));
+	s2 = (Data*)calloc(size_s2, sizeof(Data));
 	for(int i = 0; i < size_s1; i++) {	
-		s1[i].rg = (char*)calloc(strlen(array[init + i].rg)+1, sizeof(char));
-		s1[i].name = (char*)calloc(strlen(array[init + i].name)+1, sizeof(char));
-		strcpy(s1[i].rg, array[init + i].rg);			
-		strcpy(s1[i].name, array[init + i].name);
+		//s1[i].rg = (char*)calloc(strlen(array[init + i].rg)+1, sizeof(char));
+		//s1[i].name = (char*)calloc(strlen(array[init + i].name)+1, sizeof(char));
+		s1[i].rg = array[init + i].rg;			
+		fit_string(&s1[i].name, &array[init + i].name);
 	}
 
 	for(int j = 0; j < size_s2; j++) {
-		s2[j].rg = (char*)calloc(strlen(array[middle + j + 1].rg)+1, sizeof(char));
-		s2[j].name = (char*)calloc(strlen(array[middle + j + 1].name)+1, sizeof(char));
-		strcpy(s2[j].rg, array[middle + j + 1].rg);
-		strcpy(s2[j].name, array[middle + j + 1].name);
+		//s2[j].rg = (char*)calloc(strlen(array[middle + j + 1].rg)+1, sizeof(char));
+		//s2[j].name = (char*)calloc(strlen(array[middle + j + 1].name)+1, sizeof(char));
+		s2[j].rg = array[middle + j + 1].rg;
+		fit_string(&s2[j].name, &array[middle + j + 1].name);
 	}
 	
 	int i = 0;
@@ -173,35 +192,38 @@ void merge(sort_list *L, size_t init, size_t middle, size_t tam) {
 	int k = init;
 	
 	while((i < size_s1) && (j < size_s2)) {
-		if(atoi(s1[i].rg) <= atoi(s2[j].rg)) {
-			strcpy(array[k].rg, s1[i].rg);
-			strcpy(array[k].name, s1[i].name);
-			i++;
+		if(s1[i].rg <= s2[j].rg) {
+		     if(s2[i].rg != s1[j].rg){
+			fit_string(&array[k].name, &s1[i].name);
+	             }else {
+			strcpy(array[k].name, s1[i].name);		
+		     }
+			array[k].rg = s1[i].rg;
+		     i++;
 		}else {
-			strcpy(array[k].rg, s2[j].rg);
-			strcpy(array[k].name, s2[j].name);
+			array[k].rg = s2[j].rg;
+			fit_string(&array[k].name, &s2[j].name);
 			j++;
 		}
 		k++;
 	}
 
 	while(i < size_s1) {
-		strcpy(array[k].rg, s1[i].rg);
-		strcpy(array[k].name, s1[i].name);
-		free(s1[i].rg);
+		array[k].rg = s1[i].rg;
+		fit_string(&array[k].name, &s1[i].name);
 		free(s1[i].name);
 		i++;
 		k++;
 	}
-
+	free(s1);
 	while(j < size_s2) {
-		strcpy(array[k].rg, s2[j].rg);
-		strcpy(array[k].name, s2[j].name);
-		free(s2[j].rg);
+		array[k].rg = s2[j].rg;
+		fit_string(&array[k].name, &s2[j].name);
 		free(s2[j].name);
 		j++;
 		k++;
 	}
+	free(s2);
 	int itr = 0;	
 }
 void MergeSort(sort_list *L, size_t init, size_t tam) {
@@ -222,102 +244,65 @@ void ShellSort(sort_list *L, size_t tam) {
 
 	for(int interval = tam / 2; interval > 0; interval /= 2) {
 		for(int i = interval; i < tam; i += 1) {
-		        char key[30];
-		        char key_name[30];
-			char t[50];
-			strcpy(key, array[i].rg);
-			strcpy(key_name, array[i].name);
+		        int key;
+		        //char key_name[30];
+			//char t[50];
+			key = array[i].rg;
+			//strcpy(key_name, array[i].name);
 			int j;
-			for(j = i; (j >= interval) && (atoi(key) < atoi(array[j - interval].rg)); j-=interval) {
-			strcpy(array[j].rg, array[j - interval].rg);
-			strcpy(t, array[j].name);
-			strcpy(array[j].name, array[j - interval].name);
-			strcpy(array[j - interval].name, t);
+			for(j = i; (j >= interval) && (key < array[j - interval].rg); j-=interval) {
+			
+			swap_string(&array[j].name, &array[j - interval].name);	
+			array[j].rg = array[j - interval].rg;
 			}
-			strcpy(array[j].rg, key);
+			array[j].rg = key;
 		}
 	 }
 }
-
-void QuickSort(sort_list *L, size_t init , size_t tam) {
-
-   if(init < tam) {
-	size_t index = partition(L, init, tam);
-	QuickSort(L, init, index-1);
-	QuickSort(L, index+1, tam);
-   }else{
-	//printf("Comp: %ld \n mov: %ld \n", compara, move);
-	return;	
-   }	   
-}
-size_t partition (sort_list *L, size_t init , size_t tam) {
+void QuickSort(sort_list *L, int init , int tam) {
+  if(init < tam) {
 	seq *p = L->sequencial;
 	Data *array = get_begin_seq(p);
 	//int buff = sizeof(array) / sizeof(array[0]);
-	size_t index = tam; //init + (tam - init) / 2;
-	char pivot[(strlen(array[index].rg)+1)];
-	char vector[50];
-	//static int ind;
-	/*while (i < tam) { 
-	    for (int j = i+1; j < tam; j++) {
-		if(atoi(array[j].rg) <= atoi(pivot)) {
-			strcpy(vector, array[i].rg);
-			strcpy(array[i].rg, array[j].rg);
-			strcpy(array[j].rg, vector); // hard coding, poderiamos fazer uma funcao swap
-		i++;
-		}
-
-	    	if(atoi(array[j].rg) > atoi(pivot)) {
-    	    		strcpy(vector, pivot);
-			strcpy(pivot, array[i].rg);
-			strcpy(array[i].rg, vector);
-			ind = i;	
-	    	} 
-	   } 
-	}*/
-	int k = (init - 1);
-	strcpy(pivot, array[index].rg);
-	for(int i = init; i < tam; i++) {
-		//(*comp)++;
-		if(atoi(array[i].rg) <= atoi(array[index].rg)) {
-		k++;//conta indice
-		    strcpy(vector, array[i].rg);
-	    	    strcpy(array[i].rg, array[k].rg);
-		    strcpy(array[k].rg, vector); // hard coding, poderiamos fazer uma funcao swap	
-		    strcpy(vector, array[i].name);
-		    strcpy(array[i].name, array[k].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
-	            strcpy(array[k].name, vector);
-		    //(*mov)++;		    
-		}
+	uint32_t pivo =(tam + init)/2;
+	int left = init;
+	int right = tam - 1;
+	int var;
+     if(array != NULL){
+	while(left <= right){
+		while(array[left].rg < array[pivo].rg) { left++; }
+		while(array[right].rg > array[pivo].rg) { right--; }	
+	     
+		  swap_string(&array[left].name, &array[right].name);
+		  var = array[left].rg;
+		  array[left].rg = array[right].rg;
+		  array[right].rg = var;		
+		  
+		  left++;
+		  right--;			
 	}
-	strcpy(vector, array[k].rg);
-	strcpy(array[k].rg, array[index].rg);
-	strcpy(array[index].rg, vector);
-	//(*mov)++;
-    		
-	strcpy(vector, array[k].name);
-	strcpy(array[k].name, array[index].name);     // há um problema, as string copiada para outra vigente em strcpy nao se adequa ao tamanho necessario
-	strcpy(array[index].name, vector);
-	//(*mov)++;
-	return k + 1;//return ind;
+	if(right > init) { QuickSort(L, init, right + 1); }
+	if(left < tam) { QuickSort(L, left, tam); }
+     }
+   }
 }
-void Binary_Search(sort_list *L, const char *key, int init, int end) {
-	seq *ptr = L->sequencial ;
+void Binary_Search(sort_list *L, int key, int init, int end) {
+	seq *ptr = L->sequencial;
 	Data *array = get_begin_seq(ptr);
 
 	if(init > end) {
 		return;
 	}else{
-		if(!key){return;}
+		if(!key) {return;}
 		int mid = (init + end) / 2;
-		if (array[mid].rg == NULL) {
+		if (!array[mid].rg) {
         		printf("Erro: Elemento na posição %d possui campo rg nulo.\n", mid);
 			return;
     		}
-		if(atoi(key) ==  atoi(array[mid].rg)) {
-			printf("Rg encontrado: %s" , array[mid].rg);
+		if(key == array[mid].rg) {
+			printf("Rg encontrado: %d" , array[mid].rg);
 			printf("Indice: %d", mid + 1);
-		}else if(atoi(key) > atoi(array[mid].rg)) {
+		}else if(key > array[mid].rg) {
 			Binary_Search(L, key, mid+1, end);	
 		}else {
 			Binary_Search(L, key, init, mid-1);
